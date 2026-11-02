@@ -1,12 +1,18 @@
-import json
 import os
+import sys
+import json
 from pathlib import Path
 from typing import Dict, Any
+
+def get_app_dir() -> Path:
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).resolve().parent
+    return Path(__file__).resolve().parent.parent
 
 DEFAULT_PORT = 5252
 DEFAULT_HOST = "0.0.0.0"
 DEFAULT_SAVE_DIR = Path.home() / "Downloads" / "ODrop"
-CONFIG_FILE = Path(__file__).resolve().parent.parent / "odrop_settings.json"
+CONFIG_FILE = get_app_dir() / "odrop_settings.json"
 
 DEFAULT_SETTINGS: Dict[str, Any] = {
     "host": DEFAULT_HOST,

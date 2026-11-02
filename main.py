@@ -1,7 +1,20 @@
+import os
 import sys
 import time
 import argparse
 import threading
+
+# PyInstaller windowed mode fix: sys.stdout and sys.stderr are None
+class DummyStream:
+    def write(self, s): pass
+    def flush(self): pass
+    def isatty(self): return False
+
+if sys.stdout is None or not hasattr(sys.stdout, "isatty"):
+    sys.stdout = DummyStream()
+if sys.stderr is None or not hasattr(sys.stderr, "isatty"):
+    sys.stderr = DummyStream()
+
 import tkinter as tk
 from typing import Optional
 import uvicorn
@@ -30,6 +43,7 @@ class ODropApplication:
             fastapi_app,
             host=config.host,
             port=config.port,
+            log_config=None,
             log_level="info",
             access_log=False
         )

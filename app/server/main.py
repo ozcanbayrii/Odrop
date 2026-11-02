@@ -1,3 +1,4 @@
+import sys
 from contextlib import asynccontextmanager
 from pathlib import Path
 from fastapi import FastAPI
@@ -8,8 +9,19 @@ from app.server.routes import router
 from app.core.network import MDNSAdvertiser
 from app.core.tunnel import tunnel
 
-STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
-TEMPLATES_DIR = Path(__file__).resolve().parent.parent / "templates"
+def get_bundle_dir() -> Path:
+    if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+        return Path(sys._MEIPASS)
+    return Path(__file__).resolve().parent.parent.parent
+
+bundle_base = get_bundle_dir()
+STATIC_DIR = bundle_base / "app" / "static"
+if not STATIC_DIR.exists():
+    STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
+
+TEMPLATES_DIR = bundle_base / "app" / "templates"
+if not TEMPLATES_DIR.exists():
+    TEMPLATES_DIR = Path(__file__).resolve().parent.parent / "templates"
 
 mdns_advertiser = MDNSAdvertiser(port=config.port, service_name="ODrop")
 
