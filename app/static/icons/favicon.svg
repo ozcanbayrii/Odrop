@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <linearGradient id="odrop-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#7c3aed" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  <rect width="100" height="100" rx="24" fill="#0f172a" />
+  <!-- Radar circles -->
+  <circle cx="50" cy="50" r="36" stroke="#38bdf8" stroke-width="2" stroke-opacity="0.2" stroke-dasharray="4 4"/>
+  <circle cx="50" cy="50" r="26" stroke="#38bdf8" stroke-width="2" stroke-opacity="0.4" />
+  <circle cx="50" cy="50" r="16" stroke="#38bdf8" stroke-width="2" stroke-opacity="0.7" />
+  <!-- Center beacon icon -->
+  <circle cx="50" cy="50" r="8" fill="url(#odrop-grad)" filter="url(#glow)"/>
+  <!-- Incoming arrow / waves -->
+  <path d="M50 20 L50 40 M42 32 L50 40 L58 32" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

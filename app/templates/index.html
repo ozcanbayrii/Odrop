@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ODrop">
+  <title>ODrop - iPhone'dan PC'ye Kayıpsız Dosya Aktarımı</title>
+  <link rel="icon" type="image/svg+xml" href="/static/icons/favicon.svg">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="brand">
+        <img src="/static/icons/favicon.svg" alt="ODrop Logo" class="brand-icon">
+        <div>
+          <h1>ODrop</h1>
+          <p id="device-name">Windows PC</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="status-badge">
+          <div class="status-dot"></div>
+          <span>Bağlantıya Hazır</span>
+        </div>
+        <button class="btn btn-secondary" onclick="openFolder()" title="Gelen dosyalar klasörünü aç">
+          📁 Klasörü Aç
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Grid: Connection & Web Dropzone -->
+    <div class="grid-2">
+      <!-- QR & Connection Card -->
+      <div class="card">
+        <div class="card-title">
+          <h2>📲 iPhone ile Bağlan</h2>
+        </div>
+        <div class="qr-box-container">
+          <div class="qr-box">
+            <img id="qr-image" src="" alt="Bağlantı QR Kodu">
+          </div>
+          <p style="font-size:0.88rem; color:var(--text-muted);">
+            iPhone kameranız ile QR kodu taratın veya yerel IP adresiyle bağlanın:
+          </p>
+          <div class="ip-pills" id="ip-pills">
+            <!-- Dynamic IP pills injected by app.js -->
+          </div>
+          <div style="display:flex; gap:10px; width:100%; margin-top:8px;">
+            <a href="/shortcut/download" class="btn btn-primary" style="flex:1;">
+              📲 Kestirmeyi İndir (.shortcut)
+            </a>
+            <button class="btn btn-secondary" onclick="copyToClipboard(systemInfo?.upload_url || window.location.origin + '/api/upload', 'API Adresi Kopyalandı!')" title="API URL Kopyala">
+              📋 URL Kopyala
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Web Upload / Dropzone Card -->
+      <div class="card">
+        <div class="card-title">
+          <h2>⚡ Hızlı Gönderim (Web)</h2>
+          <span class="lossless-tag">💎 %100 Orijinal Kalite</span>
+        </div>
+        
+        <div class="dropzone" id="dropzone">
+          <div class="radar-animation">
+            <div class="radar-wave"></div>
+            <div class="radar-wave"></div>
+            <div class="radar-wave"></div>
+            <div class="radar-center">📡</div>
+          </div>
+          <div class="drop-text">
+            <h3>Dosyaları Buraya Bırakın</h3>
+            <p>veya galeriden fotoğraf/video seçmek için dokunun</p>
+          </div>
+          <input type="file" id="file-input" multiple accept="image/*,video/*,.heic,.heif,.dng,.mov,.mp4,.pdf,.zip,*" style="display:none;">
+          <div class="lossless-tag">
+            🛡️ HEIC • 4K 60fps MOV • ProRAW • PDF Sıkıştırmasız
+          </div>
+        </div>
+
+        <!-- Progress Box -->
+        <div class="upload-progress" id="upload-progress-box">
+          <div style="display:flex; justify-content:space-between; font-size:0.85rem;">
+            <span id="upload-status-text">Gönderiliyor...</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progress-fill"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Instructions / Shortcuts Guide -->
+    <div class="card tabs-container">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="tab-shortcut-create">⚡ Kestirmelerde 30 Saniyede Oluştur (Tavsiye Edilen)</button>
+        <button class="tab-btn" data-tab="tab-shortcut-download">📲 Hazır Dosya ile Yükleme</button>
+      </div>
+
+      <!-- Tab 1: Manual Step-by-Step (Bulletproof & Visual) -->
+      <div class="tab-content active" id="tab-shortcut-create">
+        <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:14px;">
+          iPhone'unuzdaki yerel <b>Kestirmeler (Apple Shortcuts)</b> uygulamasını kullanarak fotoğraf veya videolarınızı seçip Paylaş menüsünden tek dokunuşla kayıpsız gönderebilirsiniz:
+        </p>
+        <div class="guide-steps">
+          <div class="step-card">
+            <div class="step-num">1</div>
+            <h4>Kestirme Oluştur</h4>
+            <p>iPhone'da <b>Kestirmeler</b> uygulamasını açın, sağ üstteki <b>+</b> butonuna dokunun.</p>
+          </div>
+
+          <div class="step-card">
+            <div class="step-num">2</div>
+            <h4>Paylaşma Sayfasında Göster</h4>
+            <p>Ekranın en altındaki <b>(i)</b> simgesine dokunup <b>"Paylaşma Sayfasında Göster"</b> seçeneğini açın (Girdi Türü: Fotoğraflar, Medya, Dosyalar).</p>
+          </div>
+
+          <div class="step-card">
+            <div class="step-num">3</div>
+            <h4>Döngü Ekle</h4>
+            <p>İşlem Ekle'ye dokunun ve <b>"Yinelenen Öğelerin Her Biri İçin"</b> (Repeat with Each) işlemini ekleyin.</p>
+          </div>
+
+          <div class="step-card">
+            <div class="step-num">4</div>
+            <h4>URL İçeriğini Al</h4>
+            <p>Döngünün içine <b>"URL İçeriğini Al"</b> ekleyin:</p>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">
+              • Metot: <b>POST</b><br>
+              • İstek Gövdesi: <b>Form</b><br>
+              • Alan: <b>file</b> ➔ Tür: <b>Dosya</b> (Yinelenen Öğe)
+            </div>
+            <div class="code-snippet">
+              <span id="instruction-url-snippet">http://.../api/upload</span>
+              <button class="copy-mini-btn" onclick="copyToClipboard(document.getElementById('instruction-url-snippet').textContent)">Kopyala</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:20px; padding:14px; background:rgba(56,189,248,0.08); border-radius:12px; border:1px solid rgba(56,189,248,0.2); font-size:0.88rem; color:#bae6fd;">
+          💡 <b>Nasıl Kullanılır:</b> iPhone Fotoğraflar uygulamasında göndermek istediğiniz video ve fotoğrafları seçin ➔ <b>Paylaş</b> simgesine dokunun ➔ Listeden oluşturduğunuz kestirmeyi seçin. Dosyalar orijinal boyutunda ve sıfır kalite kaybıyla saniyeler içinde bilgisayarınıza gelecektir!
+        </div>
+      </div>
+
+      <!-- Tab 2: Automatic Shortcut File Download -->
+      <div class="tab-content" id="tab-shortcut-download">
+        <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:14px;">
+          ODrop sunucusu sizin için bilgisayarınızın IP adresini otomatik içeren hazır bir <code>.shortcut</code> dosyası üretti:
+        </p>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <a href="/shortcut/download" class="btn btn-primary" style="align-self:flex-start;">
+            📥 ODrop.shortcut İndir
+          </a>
+          <ol style="font-size:0.88rem; color:var(--text-muted); line-height:1.8; margin-left:20px;">
+            <li>iPhone Safari üzerinden yukarıdaki butona basarak dosyayı indirin.</li>
+            <li>İndirilenler klasöründe <b>ODrop.shortcut</b> dosyasına basılı tutun ve <b>Paylaş</b>'a basın.</li>
+            <li>Listeden <b>Kestirmeler</b> uygulamasını seçin ve <b>"Kestirmeyi Ekle"</b> diyerek onaylayın.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- Remote Access / Tunnel Card -->
+    <div class="card tunnel-card">
+      <div class="tunnel-header">
+        <div>
+          <h2 style="font-size:1.1rem; display:flex; align-items:center; gap:8px;">
+            🌐 Farklı Ağlardan (İnternet / 4G / 5G) Gönderim
+          </h2>
+          <p style="font-size:0.82rem; color:var(--text-muted); margin-top:4px;">
+            Aynı Wi-Fi ağında bulunmadığınızda bile (dışarıda mobil veriyle) bilgisayara güvenli SSL tüneliyle dosya gönderebilirsiniz.
+          </p>
+        </div>
+        <button class="btn btn-secondary" id="tunnel-toggle-btn" onclick="toggleTunnel()">
+          Dış Ağ Tünelini Başlat
+        </button>
+      </div>
+      <div style="margin-top:14px; font-size:0.85rem;" id="tunnel-status-text">
+        <span style="color:#94a3b8">⚪ Kapalı (Yalnızca Aynı Wi-Fi Ağı)</span>
+      </div>
+      <div id="tunnel-url-box" style="display:none; margin-top:10px;" class="code-snippet">
+        <span id="tunnel-public-url"></span>
+        <button class="copy-mini-btn" onclick="copyToClipboard(document.getElementById('tunnel-public-url').textContent)">Kopyala</button>
+      </div>
+    </div>
+
+    <!-- File Activity Section -->
+    <div class="card activity-card">
+      <div class="card-title">
+        <h2>📂 Aktarılan Dosyalar</h2>
+        <button class="btn btn-secondary" style="padding:4px 10px; font-size:0.8rem;" onclick="fetchFiles()">
+          🔄 Yenile
+        </button>
+      </div>
+      <div class="file-list" id="file-list-container">
+        <!-- Rendered by app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification element -->
+  <div class="copy-toast" id="copy-toast"></div>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
