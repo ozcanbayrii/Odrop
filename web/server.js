@@ -19,6 +19,8 @@ const MIME_TYPES = {
   '.ico': 'image/x-icon',
   '.mp3': 'audio/mpeg',
   '.wav': 'audio/wav',
+  '.exe': 'application/vnd.microsoft.portable-executable',
+  '.zip': 'application/zip',
 };
 
 // Get primary local IP for convenience
@@ -71,15 +73,17 @@ const server = http.createServer((req, res) => {
     const ext = path.extname(filePath).toLowerCase();
     const contentType = MIME_TYPES[ext] || 'application/octet-stream';
 
-    fs.readFile(filePath, (readErr, content) => {
-      if (readErr) {
-        res.writeHead(500);
-        res.end('Server Error');
-      } else {
-        res.writeHead(200, { 'Content-Type': contentType });
-        res.end(content);
-      }
-    });
+    const headers = {
+      'Content-Type': contentType,
+      'Content-Length': stats.size,
+    };
+
+    if (ext === '.exe' || ext === '.zip') {
+      headers['Content-Disposition'] = `attachment; filename="${path.basename(filePath)}"`;
+    }
+
+    res.writeHead(200, headers);
+    fs.createReadStream(filePath).pipe(res);
   });
 });
 
