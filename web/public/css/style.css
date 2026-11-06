@@ -576,8 +576,8 @@ body.dark-mode .download-card:hover {
 }
 
 .btn-download-large {
-  background: var(--btn-black);
-  color: var(--btn-black-text);
+  background: var(--btn-black) !important;
+  color: var(--btn-black-text) !important;
   border-radius: 10px;
   padding: 12px 24px;
   font-size: 0.95rem;
@@ -588,6 +588,10 @@ body.dark-mode .download-card:hover {
   gap: 10px;
   transition: all 0.2s ease;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.btn-download-large span {
+  color: inherit !important;
 }
 
 .btn-download-large:hover {
