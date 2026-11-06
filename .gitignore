@@ -9,3 +9,7 @@ venv/
 bin/cloudflared*
 odrop_settings.json
 *.tmp
+build/
+web/node_modules/
+web/public/downloads/*.zip
+web/public/downloads/*.exe

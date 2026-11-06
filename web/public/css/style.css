@@ -1,5 +1,5 @@
 /* ==========================================================================
-   ozcan.work Clean Tool Theme for ODrop
+   ODrop Clean Theme
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600&family=JetBrains+Mono:wght@400;500&display=swap');
@@ -9,7 +9,7 @@
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', Consolas, monospace;
 
-  /* ozcan.work Palette */
+  /* Theme Palette */
   --bg-page: #fafafa;
   --bg-card: #ffffff;
   --bg-hover: #f4f4f5;

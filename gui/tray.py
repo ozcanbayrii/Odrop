@@ -7,17 +7,17 @@ from app.config import config
 from app.core.notifier import Notifier
 
 def create_tray_icon_image() -> Image.Image:
-    """Draws a clean 64x64 AirDrop-style radar icon for the system tray."""
+    """Draws a clean 64x64 ODrop badge icon for the system tray."""
     img = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
 
-    # Outer blue circle
-    draw.ellipse((2, 2, 62, 62), fill="#0284c7")
+    # Outer dark circle matching modern black
+    draw.ellipse((2, 2, 62, 62), fill="#09090b")
     # Radar rings
-    draw.ellipse((12, 12, 52, 52), outline="#ffffff", width=2)
-    draw.ellipse((22, 22, 42, 42), outline="#38bdf8", width=2)
-    # Center beacon
-    draw.ellipse((28, 28, 36, 36), fill="#ffffff")
+    draw.ellipse((12, 12, 52, 52), outline="#3f3f46", width=2)
+    draw.ellipse((22, 22, 42, 42), outline="#71717a", width=2)
+    # Center green beacon (active status)
+    draw.ellipse((28, 28, 36, 36), fill="#10b981")
 
     return img
 

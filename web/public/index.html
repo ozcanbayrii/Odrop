@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="ozcan.work | ODrop">
-  <title>ozcan.work — ODrop Kayıpsız Dosya Aktarımı</title>
+  <meta name="apple-mobile-web-app-title" content="ODrop">
+  <title data-i18n="pageTitle">ODrop — Kayıpsız Dosya Aktarımı</title>
   <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
   <link rel="stylesheet" href="/css/style.css">
 </head>
@@ -16,16 +16,19 @@
   <header class="header">
     <div class="header-container">
       <a href="/" class="brand">
-        <span class="brand-name">ozcan.work</span>
-        <span class="brand-badge">DROP</span>
+        <span class="brand-name">ODrop</span>
+        <span class="brand-badge">AIR</span>
       </a>
 
       <div class="header-actions">
-        <a href="/downloads/ODrop.exe" class="btn-black" download="ODrop.exe" title="Windows için sürekli çalışan masaüstü uygulamasını indir">
-          <span>💻</span> Windows İndir (.exe)
+        <a href="/downloads/ODrop-Windows.zip" class="btn-black" download="ODrop-Windows.zip" title="Windows için masaüstü uygulamasını indir (ZIP)">
+          <span>💻</span> <span data-i18n="btnWinDownload">Windows İndir (.zip)</span>
         </a>
         <button class="btn-outline" id="room-code-btn" onclick="copyRoomLink()" title="Oda bağlantısını kopyala">
-          ✨ Oda: ...
+          ✨ <span data-i18n="roomPrefix">Oda:</span> ...
+        </button>
+        <button class="btn-outline btn-icon" id="lang-toggle" onclick="toggleLanguage()" title="TR / EN" style="font-weight:700; font-size:0.75rem; padding:6px 10px; min-width:42px;">
+          EN
         </button>
         <button class="btn-outline btn-icon" id="theme-toggle" title="Karanlık/Aydınlık Tema">
           🌙
@@ -41,9 +44,9 @@
     <div class="status-banner">
       <div class="status-left">
         <div class="status-dot" id="status-dot"></div>
-        <span id="status-text">İkinci cihaz bekleniyor... (QR Kodu okutun)</span>
+        <span id="status-text" data-i18n="statusWaiting">İkinci cihaz bekleniyor... (QR Kodu okutun)</span>
       </div>
-      <div class="pill pill-gray" id="device-label">📱 Cihazınız: ...</div>
+      <div class="pill pill-gray" id="device-label">📱 Bu Cihaz: ...</div>
     </div>
 
     <!-- Main Tool Grid: 2 Side-by-Side Focused Cards -->
@@ -51,8 +54,8 @@
 
       <!-- Card 1: Pairing -->
       <section class="card">
-        <h2 class="card-title">iPhone ile Eşleş</h2>
-        <p class="card-desc">iPhone kameranızla QR kodu okutun veya bağlantıyı paylaşın.</p>
+        <h2 class="card-title" data-i18n="pairTitle">iPhone ile Eşleş</h2>
+        <p class="card-desc" data-i18n="pairDesc">iPhone kameranızla QR kodu okutun veya bağlantıyı paylaşın.</p>
 
         <div class="qr-center">
           <div class="qr-frame">
@@ -61,27 +64,27 @@
 
           <div class="link-row">
             <input type="text" class="link-input" id="room-link-input" readonly value="Bağlantı hazırlanıyor...">
-            <button class="btn-black" onclick="copyRoomLink()">Kopyala</button>
+            <button class="btn-black" onclick="copyRoomLink()" data-i18n="btnCopy">Kopyala</button>
           </div>
         </div>
 
         <div class="pill-row">
-          <span class="pill pill-green">Uçtan Uca Şifreli</span>
-          <span class="pill pill-blue">Sunucusuz P2P</span>
-          <span class="pill pill-yellow">Doğrudan Aktarım</span>
+          <span class="pill pill-green" data-i18n="pillEncrypted">Uçtan Uca Şifreli</span>
+          <span class="pill pill-blue" data-i18n="pillP2P">Sunucusuz P2P</span>
+          <span class="pill pill-yellow" data-i18n="pillDirect">Doğrudan Aktarım</span>
         </div>
       </section>
 
       <!-- Card 2: Dropzone / Transfer -->
       <section class="card">
-        <h2 class="card-title">Kayıpsız Dosya Gönder</h2>
-        <p class="card-desc">Fotoğraf, 4K video veya belgeleri sürükleyin ya da galeriden seçin.</p>
+        <h2 class="card-title" data-i18n="sendTitle">Kayıpsız Dosya Gönder</h2>
+        <p class="card-desc" data-i18n="sendDesc">Fotoğraf, 4K video veya belgeleri sürükleyin ya da galeriden seçin.</p>
 
         <!-- Dropzone -->
         <div class="dropzone-area disabled" id="dropzone">
           <div class="radar-circle" id="radar-icon">📡</div>
-          <div class="dropzone-main-text" id="drop-main-text">Önce iPhone ile Eşleşin</div>
-          <div class="dropzone-sub-text" id="drop-sub-text">Fotoğraf arşivi veya dosya seçmek için dokunun</div>
+          <div class="dropzone-main-text" id="drop-main-text" data-i18n="dropWaiting">Önce iPhone ile Eşleşin</div>
+          <div class="dropzone-sub-text" id="drop-sub-text" data-i18n="dropSub">Fotoğraf arşivi veya dosya seçmek için dokunun</div>
           <input type="file" id="file-input" multiple accept="image/*,video/*,.heic,.heif,.dng,.mov,.mp4,.pdf,.zip,*" style="display:none;">
         </div>
 
@@ -97,7 +100,7 @@
         </div>
 
         <div class="pill-row">
-          <span class="pill pill-green">%100 Orijinal</span>
+          <span class="pill pill-green" data-i18n="pillOriginal">%100 Orijinal</span>
           <span class="pill pill-blue">HEIC & ProRAW</span>
           <span class="pill pill-yellow">4K 60FPS MOV</span>
         </div>
@@ -108,12 +111,12 @@
     <!-- History / Received Files Card -->
     <section class="history-card">
       <div class="history-header">
-        <h3 style="font-family:var(--font-serif); font-size:1.15rem; font-weight:600;">Alınan Dosyalar</h3>
+        <h3 style="font-family:var(--font-serif); font-size:1.15rem; font-weight:600;" data-i18n="historyTitle">Alınan Dosyalar</h3>
         <span class="pill pill-gray" id="history-count">0 Dosya</span>
       </div>
 
       <div class="file-list" id="file-list">
-        <div class="empty-state">
+        <div class="empty-state" data-i18n="emptyState">
           Henüz dosya alınmadı. Bağlı cihazdan gönderilen dosyalar doğrudan tarayıcınıza iner ve burada listelenir.
         </div>
       </div>
@@ -123,25 +126,34 @@
     <section class="download-card" id="desktop-app">
       <div class="download-info">
         <h2 class="download-title">
-          <span>💻</span> Windows İçin ODrop Masaüstü Uygulaması
+          <span>💻</span> <span data-i18n="desktopTitle">Windows İçin ODrop Masaüstü Uygulaması</span>
         </h2>
-        <p class="download-desc">
+        <p class="download-desc" data-i18n="desktopDesc">
           Tarayıcıyı açık tutmak zorunda kalmadan sürekli dosya almak isteyenler için; Windows Sistem Tepsisinde (System Tray) arka planda 7/24 sessizce çalışan, gelen tüm fotoğrafları onay beklemeden doğrudan <b>İndirilenler\ODrop</b> klasörüne kaydeden ve Windows 10/11 bildirimi veren masaüstü sürümünü indirin.
         </p>
         <div class="pill-row">
-          <span class="pill pill-green">Kurulumsuz (Portable)</span>
-          <span class="pill pill-blue">7/24 Arka Plan Tepsisi</span>
-          <span class="pill pill-yellow">Doğrudan Klasöre Kaydetme</span>
-          <span class="pill pill-gray">Windows 10 / 11 Bildirimleri</span>
+          <span class="pill pill-green" data-i18n="pillPortable">Sıfır Kurulum (Portable)</span>
+          <span class="pill pill-blue" data-i18n="pillTray">7/24 Arka Plan Tepsisi</span>
+          <span class="pill pill-yellow" data-i18n="pillAutoSave">Doğrudan Klasöre Kaydetme</span>
+          <span class="pill pill-gray" data-i18n="pillNotif">Windows 10 / 11 Bildirimleri</span>
         </div>
       </div>
       <div class="download-actions">
-        <a href="/downloads/ODrop.exe" class="btn-download-large" download="ODrop.exe">
-          <span>⬇️</span> ODrop.exe İndir <span style="font-size:0.75rem; opacity:0.8;">(v1.0 • Portable)</span>
+        <a href="/downloads/ODrop-Windows.zip" class="btn-download-large" download="ODrop-Windows.zip" style="background:var(--text-main); color:var(--bg-main);">
+          <span>📦</span> <span data-i18n="btnZipDl">ODrop İndir (.ZIP)</span> <span style="font-size:0.75rem; opacity:0.8;" data-i18n="zipTag">(Önerilen • v1.0)</span>
         </a>
-        <span style="font-size:0.75rem; color:var(--text-muted); text-align:center;">
-          Tek tıkla çalışır • Kurulum gerektirmez
-        </span>
+        <div style="display:flex; gap:0.5rem; align-items:center; justify-content:center; flex-wrap:wrap; margin-top:0.35rem;">
+          <a href="/downloads/ODrop.exe" download="ODrop.exe" style="font-size:0.75rem; color:var(--text-muted); text-decoration:underline;" data-i18n="linkExeDl">
+            Doğrudan .exe olarak indir
+          </a>
+          <span style="font-size:0.75rem; color:var(--border-subtle);">•</span>
+          <span style="font-size:0.75rem; color:var(--text-muted);" data-i18n="noInstall">
+            Kurulum gerektirmez
+          </span>
+        </div>
+        <p style="font-size:0.72rem; color:var(--text-muted); margin:0.3rem 0 0 0; text-align:center; max-width:280px; line-height:1.35;" data-i18n="securityNotice">
+          🛡️ Güvenli ve açık kaynaklıdır. Tarayıcınız yeni yayınlanan dosyalarda onay isterse ZIP sürümünü tercih edebilirsiniz.
+        </p>
       </div>
     </section>
 

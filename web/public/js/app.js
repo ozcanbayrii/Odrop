@@ -1,12 +1,155 @@
 /**
- * ODrop Web Controller — Clean & Convenient Tool Interface
+ * ODrop Web Controller — Multi-language (TR / EN) & WebRTC P2P
  */
 
+const I18N = {
+  tr: {
+    pageTitle: "ODrop — Kayıpsız Dosya Aktarımı",
+    btnWinDownload: "Windows İndir (.zip)",
+    roomPrefix: "Oda:",
+    statusWaiting: "İkinci cihaz bekleniyor... (QR Kodu okutun)",
+    statusConnected: "🟢 P2P Bağlandı (Doğrudan & Kayıpsız)",
+    devicePrefix: "📱 Bu Cihaz:",
+    pairTitle: "iPhone ile Eşleş",
+    pairDesc: "iPhone kameranızla QR kodu okutun veya bağlantıyı paylaşın.",
+    btnCopy: "Kopyala",
+    pillEncrypted: "Uçtan Uca Şifreli",
+    pillP2P: "Sunucusuz P2P",
+    pillDirect: "Doğrudan Aktarım",
+    sendTitle: "Kayıpsız Dosya Gönder",
+    sendDesc: "Fotoğraf, 4K video veya belgeleri sürükleyin ya da galeriden seçin.",
+    dropWaiting: "Önce iPhone ile Eşleşin",
+    dropWaitingSub: "QR kodu okuttuktan sonra dosya seçebilirsiniz",
+    dropReady: "Dosyaları Buraya Bırakın",
+    dropReadySub: "veya galeriden fotoğraf/video seçmek için dokunun",
+    pillOriginal: "%100 Orijinal",
+    historyTitle: "Alınan Dosyalar",
+    historyEmpty: "Henüz dosya alınmadı. Bağlı cihazdan gönderilen dosyalar doğrudan tarayıcınıza iner ve burada listelenir.",
+    desktopTitle: "Windows İçin ODrop Masaüstü Uygulaması",
+    desktopDesc: "Tarayıcıyı açık tutmak zorunda kalmadan sürekli dosya almak isteyenler için; Windows Sistem Tepsisinde (System Tray) arka planda 7/24 sessizce çalışan, gelen tüm fotoğrafları onay beklemeden doğrudan <b>İndirilenler\\ODrop</b> klasörüne kaydeden ve Windows 10/11 bildirimi veren masaüstü sürümünü indirin.",
+    pillPortable: "Sıfır Kurulum (Portable)",
+    pillTray: "7/24 Arka Plan Tepsisi",
+    pillAutoSave: "Doğrudan Klasöre Kaydetme",
+    pillNotif: "Windows 10 / 11 Bildirimleri",
+    btnZipDl: "ODrop İndir (.ZIP)",
+    zipTag: "(Önerilen • v1.0)",
+    linkExeDl: "Doğrudan .exe olarak indir",
+    noInstall: "Kurulum gerektirmez",
+    securityNotice: "🛡️ Güvenli ve açık kaynaklıdır. Tarayıcınız yeni yayınlanan dosyalarda onay isterse ZIP sürümünü tercih edebilirsiniz.",
+    toastCopied: "Oda bağlantısı kopyalandı! 📋",
+    toastPeerJoined: "bağlandı!",
+    toastPeerLeft: "Cihaz bağlantısı kesildi.",
+    toastPairFirst: "Lütfen önce iPhone ile QR kodu okutun!",
+    toastReceived: "🎉 Dosya alındı: ",
+    toastSent: "✓ Gönderildi",
+    btnSave: "Kaydet 💾",
+    fileUnit: "Dosya",
+    sending: "Gönderiliyor",
+    receiving: "Alınıyor"
+  },
+  en: {
+    pageTitle: "ODrop — Lossless File Transfer",
+    btnWinDownload: "Download Windows (.zip)",
+    roomPrefix: "Room:",
+    statusWaiting: "Waiting for second device... (Scan QR code)",
+    statusConnected: "🟢 P2P Connected (Direct & Lossless)",
+    devicePrefix: "📱 This Device:",
+    pairTitle: "Pair with iPhone",
+    pairDesc: "Scan the QR code with iPhone camera or share the room link.",
+    btnCopy: "Copy",
+    pillEncrypted: "End-to-End Encrypted",
+    pillP2P: "Serverless P2P",
+    pillDirect: "Direct Transfer",
+    sendTitle: "Send Lossless Files",
+    sendDesc: "Drag & drop photos, 4K videos, documents or choose from gallery.",
+    dropWaiting: "Pair with iPhone First",
+    dropWaitingSub: "You can select files after scanning the QR code",
+    dropReady: "Drop Photos or Files Here",
+    dropReadySub: "or tap to browse your photo library or files",
+    pillOriginal: "100% Lossless",
+    historyTitle: "Received Files",
+    historyEmpty: "No files received yet. Files sent from the connected device will download directly and appear here.",
+    desktopTitle: "ODrop Desktop App for Windows",
+    desktopDesc: "For continuous background transfers without keeping a browser open: download the standalone desktop client running 24/7 in your Windows system tray, automatically saving all photos directly to <b>Downloads\\ODrop</b> with native notifications.",
+    pillPortable: "Zero Install (Portable)",
+    pillTray: "24/7 System Tray",
+    pillAutoSave: "Direct Folder Save",
+    pillNotif: "Windows 10 / 11 Notifications",
+    btnZipDl: "Download ODrop (.ZIP)",
+    zipTag: "(Recommended • v1.0)",
+    linkExeDl: "Download direct .exe",
+    noInstall: "No installation needed",
+    securityNotice: "🛡️ Safe and open-source. Download the ZIP package for instant, warning-free installation.",
+    toastCopied: "Room link copied! 📋",
+    toastPeerJoined: "connected!",
+    toastPeerLeft: "Device disconnected.",
+    toastPairFirst: "Please pair your iPhone by scanning the QR code first!",
+    toastReceived: "🎉 File received: ",
+    toastSent: "✓ Sent",
+    btnSave: "Save 💾",
+    fileUnit: "Files",
+    sending: "Sending",
+    receiving: "Receiving"
+  }
+};
+
+let currentLang = localStorage.getItem('odrop-lang') || 'tr';
 let p2p = null;
 let ws = null;
 let currentRoom = null;
 let isConnected = false;
 let receivedFilesCount = 0;
+
+function t(key) {
+  return (I18N[currentLang] && I18N[currentLang][key]) || (I18N['tr'][key]) || key;
+}
+
+function setLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem('odrop-lang', lang);
+  document.documentElement.lang = lang;
+
+  // Update Lang button text (shows the NEXT language you can switch to)
+  const langBtn = document.getElementById('lang-toggle');
+  if (langBtn) {
+    langBtn.textContent = lang === 'tr' ? 'EN' : 'TR';
+  }
+
+  // Update all elements with data-i18n
+  document.querySelectorAll('[data-i18n]').forEach((el) => {
+    const key = el.getAttribute('data-i18n');
+    const val = t(key);
+    if (el.tagName === 'TITLE') {
+      document.title = val;
+    } else if (key === 'desktopDesc') {
+      el.innerHTML = val;
+    } else {
+      el.textContent = val;
+    }
+  });
+
+  // Update room prefix if room is already generated
+  if (currentRoom) {
+    const roomBtn = document.getElementById('room-code-btn');
+    if (roomBtn) roomBtn.textContent = `✨ ${t('roomPrefix')} #${currentRoom}`;
+  }
+
+  // Update device label
+  const devEl = document.getElementById('device-label');
+  if (devEl) devEl.textContent = `${t('devicePrefix')} ${getDeviceName()}`;
+
+  // Update history count
+  const countEl = document.getElementById('history-count');
+  if (countEl) countEl.textContent = `${receivedFilesCount} ${t('fileUnit')}`;
+
+  // Update dropzone & connection state text
+  updateConnectionUI(isConnected, true);
+}
+
+function toggleLanguage() {
+  const newLang = currentLang === 'tr' ? 'en' : 'tr';
+  setLanguage(newLang);
+}
 
 function formatBytes(bytes) {
   if (bytes < 1024) return bytes + ' B';
@@ -31,7 +174,7 @@ function getDeviceName() {
   if (/Android/i.test(ua)) return 'Android';
   if (/Mac/i.test(ua)) return 'Mac';
   if (/Windows/i.test(ua)) return 'Windows PC';
-  return 'Bilgisayar';
+  return currentLang === 'tr' ? 'Bilgisayar' : 'Computer';
 }
 
 function playChime() {
@@ -63,7 +206,8 @@ function showToast(msg) {
   setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
-function copyText(text, msg = 'Bağlantı kopyalandı! 📋') {
+function copyText(text, msg) {
+  msg = msg || t('toastCopied');
   if (navigator.clipboard) {
     navigator.clipboard.writeText(text).then(() => showToast(msg));
   } else {
@@ -79,14 +223,12 @@ function copyText(text, msg = 'Bağlantı kopyalandı! 📋') {
 
 function copyRoomLink() {
   const fullUrl = `${window.location.origin}/?room=${currentRoom}`;
-  copyText(fullUrl, 'Oda bağlantısı kopyalandı! 📋');
+  copyText(fullUrl, t('toastCopied'));
 }
 
 // DOM Ready
 document.addEventListener('DOMContentLoaded', () => {
-  const devEl = document.getElementById('device-label');
-  if (devEl) devEl.textContent = `📱 Bu Cihaz: ${getDeviceName()}`;
-
+  setLanguage(currentLang);
   initTheme();
   initSignaling();
   initDropzone();
@@ -133,7 +275,7 @@ function initSignaling() {
 
   p2p.onFileReceived = (fileData) => {
     playChime();
-    showToast(`🎉 Dosya alındı: ${fileData.name}`);
+    showToast(`${t('toastReceived')}${fileData.name}`);
     appendReceivedFile(fileData);
     hideProgressUI();
   };
@@ -165,8 +307,8 @@ function initSignaling() {
         }
 
         case 'peer-joined': {
-          showToast(`⚡ ${data.peerDevice} bağlandı!`);
-          document.getElementById('status-text').textContent = `${data.peerDevice} ile eşleşildi...`;
+          showToast(`⚡ ${data.peerDevice} ${t('toastPeerJoined')}`);
+          document.getElementById('status-text').textContent = `${data.peerDevice} ${t('statusConnected')}`;
           p2p.init(data.shouldInitiate);
           break;
         }
@@ -177,13 +319,13 @@ function initSignaling() {
         }
 
         case 'peer-left': {
-          showToast('Cihaz bağlantısı kesildi.');
+          showToast(t('toastPeerLeft'));
           updateConnectionUI(false);
           break;
         }
 
         case 'error': {
-          showToast(`Hata: ${data.message}`);
+          showToast(`Error: ${data.message}`);
           break;
         }
       }
@@ -202,7 +344,7 @@ function updateRoomUI(room) {
   window.history.replaceState({}, '', newUrl);
 
   const roomBtn = document.getElementById('room-code-btn');
-  if (roomBtn) roomBtn.textContent = `✨ Oda: #${room}`;
+  if (roomBtn) roomBtn.textContent = `✨ ${t('roomPrefix')} #${room}`;
 
   const linkInput = document.getElementById('room-link-input');
   if (linkInput) linkInput.value = newUrl;
@@ -213,7 +355,7 @@ function updateRoomUI(room) {
   }
 }
 
-function updateConnectionUI(connected) {
+function updateConnectionUI(connected, isLangSwitch = false) {
   isConnected = connected;
 
   const dot = document.getElementById('status-dot');
@@ -225,19 +367,21 @@ function updateConnectionUI(connected) {
 
   if (connected) {
     if (dot) dot.classList.add('connected');
-    if (text) text.innerHTML = `<span style="color:#059669; font-weight:600;">🟢 P2P Bağlandı (Doğrudan & Kayıpsız)</span>`;
+    if (text) text.innerHTML = `<span style="color:#059669; font-weight:600;">${t('statusConnected')}</span>`;
     if (dropzone) dropzone.classList.remove('disabled');
-    if (mainText) mainText.textContent = 'Dosyaları Buraya Bırakın';
-    if (subText) subText.textContent = 'veya galeriden fotoğraf/video seçmek için dokunun';
+    if (mainText) mainText.textContent = t('dropReady');
+    if (subText) subText.textContent = t('dropReadySub');
     if (radarIcon) radarIcon.textContent = '⚡';
-    playChime();
-    showToast('🚀 Cihazlar doğrudan birbirine bağlandı!');
+    if (!isLangSwitch) {
+      playChime();
+      showToast('🚀 P2P Connected!');
+    }
   } else {
     if (dot) dot.classList.remove('connected');
-    if (text) text.textContent = 'İkinci cihaz bekleniyor... (QR Kodu okutun)';
+    if (text) text.textContent = t('statusWaiting');
     if (dropzone) dropzone.classList.add('disabled');
-    if (mainText) mainText.textContent = 'Önce iPhone ile Eşleşin';
-    if (subText) subText.textContent = 'QR kodu okuttuktan sonra dosya seçebilirsiniz';
+    if (mainText) mainText.textContent = t('dropWaiting');
+    if (subText) subText.textContent = t('dropWaitingSub');
     if (radarIcon) radarIcon.textContent = '📡';
   }
 }
@@ -251,7 +395,7 @@ function updateProgressUI(info) {
   card.style.display = 'block';
   fill.style.width = `${info.progress}%`;
 
-  const action = info.direction === 'send' ? 'Gönderiliyor' : 'Alınıyor';
+  const action = info.direction === 'send' ? t('sending') : t('receiving');
   text.textContent = `${action}: ${info.name} (%${info.progress})`;
   speed.textContent = info.speed;
 }
@@ -270,7 +414,7 @@ function initDropzone() {
 
   dropzone.onclick = () => {
     if (!isConnected) {
-      showToast('Lütfen önce iPhone ile QR kodu okutun!');
+      showToast(t('toastPairFirst'));
       return;
     }
     fileInput.click();
@@ -289,7 +433,7 @@ function initDropzone() {
     e.preventDefault();
     dropzone.classList.remove('dragover');
     if (!isConnected) {
-      showToast('Lütfen önce iPhone ile QR kodu okutun!');
+      showToast(t('toastPairFirst'));
       return;
     }
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
@@ -312,9 +456,9 @@ async function sendFilesBatch(files) {
       await p2p.sendFile(file, (info) => {
         updateProgressUI(info);
       });
-      showToast(`✓ Gönderildi [${i + 1}/${files.length}]: ${file.name}`);
+      showToast(`${t('toastSent')} [${i + 1}/${files.length}]: ${file.name}`);
     } catch (err) {
-      showToast(`Hata: ${file.name} gönderilemedi.`);
+      showToast(`Error: ${file.name}`);
       console.error(err);
       break;
     }
@@ -329,7 +473,7 @@ function appendReceivedFile(file) {
 
   receivedFilesCount++;
   const countEl = document.getElementById('history-count');
-  if (countEl) countEl.textContent = `${receivedFilesCount} Dosya`;
+  if (countEl) countEl.textContent = `${receivedFilesCount} ${t('fileUnit')}`;
 
   const item = document.createElement('div');
   item.className = 'file-item';
@@ -341,11 +485,11 @@ function appendReceivedFile(file) {
       <div class="file-icon">${icon}</div>
       <div>
         <div class="file-name" title="${file.name}">${file.name}</div>
-        <div class="file-meta">${formatBytes(file.size)} • ${file.date} • %100 Orijinal</div>
+        <div class="file-meta">${formatBytes(file.size)} • ${file.date} • ${t('pillOriginal')}</div>
       </div>
     </div>
     <a href="${file.url}" download="${file.name}" class="btn-outline" style="padding: 5px 12px; font-size: 0.78rem;">
-      Kaydet 💾
+      ${t('btnSave')}
     </a>
   `;
 
