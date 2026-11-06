@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ODrop Web">
+  <title>ODrop Web — Doğrudan P2P Kayıpsız Dosya Aktarımı (AirDrop)</title>
+  <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="brand">
+        <img src="/icons/favicon.svg" alt="ODrop Logo" class="brand-icon">
+        <div>
+          <h1>ODrop Web</h1>
+          <p>Sunucusuz Doğrudan P2P Aktarım</p>
+        </div>
+      </div>
+      <div class="device-badge" id="my-device-name">
+        📱 Cihazınız
+      </div>
+    </header>
+
+    <!-- Connection Status Bar -->
+    <div class="connection-bar" id="connection-bar">
+      <div class="conn-status">
+        <div class="conn-dot"></div>
+        <span id="conn-text">İkinci cihaz bekleniyor... (QR Kodu okutun)</span>
+      </div>
+      <button class="room-pill" id="room-code-btn" title="Bağlantıyı kopyalamak için tıklayın">
+        Oda: ...
+      </button>
+    </div>
+
+    <!-- Main Grid: QR Pairing & Dropzone -->
+    <div class="grid-main">
+      <!-- QR Pairing Card -->
+      <div class="card">
+        <div class="card-title">
+          <h2>📲 Cihazla Eşleş</h2>
+        </div>
+        <div class="qr-container">
+          <div class="qr-box">
+            <img id="qr-img" src="" alt="Eşleşme QR Kodu">
+          </div>
+          <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.4;">
+            iPhone kameranız ile QR kodu okutun veya yukarıdaki oda linkini diğer cihaza gönderin.
+          </p>
+          <div class="lossless-pill">
+            🔒 Uçtan Uca Şifreli • Dosyalar Sunucuya Kaydedilmez
+          </div>
+        </div>
+      </div>
+
+      <!-- Dropzone / Transfer Card -->
+      <div class="card">
+        <div class="card-title">
+          <h2>⚡ Hızlı Gönderim</h2>
+          <span class="lossless-pill" style="margin-top:0;">💎 %100 Orijinal Kalite</span>
+        </div>
+
+        <div class="dropzone disabled" id="dropzone">
+          <div class="radar-animation">
+            <div class="radar-wave"></div>
+            <div class="radar-wave"></div>
+            <div class="radar-wave"></div>
+            <div class="radar-center">📡</div>
+          </div>
+          <h3 id="drop-title" style="font-size:1.05rem; font-weight:600; margin-bottom:6px;">
+            Önce diğer cihazla bağlanın
+          </h3>
+          <p style="font-size:0.82rem; color:var(--text-muted);">
+            Galeriden fotoğraf/video veya dosya seçmek için dokunun
+          </p>
+          <input type="file" id="file-input" multiple accept="image/*,video/*,.heic,.heif,.dng,.mov,.mp4,.pdf,.zip,*" style="display:none;">
+          <div class="lossless-pill">
+            🛡️ HEIC • 4K 60fps MOV • ProRAW • Sıkıştırmasız
+          </div>
+        </div>
+
+        <!-- Transfer Progress Card -->
+        <div class="progress-card" id="progress-card">
+          <div class="progress-header">
+            <span id="progress-text">Aktarılıyor...</span>
+            <span id="progress-speed" style="color:var(--accent-cyan); font-weight:600;">0 MB/s</span>
+          </div>
+          <div class="progress-bg">
+            <div class="progress-bar" id="progress-bar"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- File Activity / Download Card -->
+    <div class="card">
+      <div class="card-title">
+        <h2>📥 Alınan Dosyalar</h2>
+        <span style="font-size:0.8rem; color:var(--text-muted);">Otomatik olarak tarayıcınızın İndirilenler klasörüne kaydedilir</span>
+      </div>
+      <div class="file-list" id="file-list">
+        <div class="empty-state">
+          Henüz dosya alınmadı. Bağlı cihazdan dosya gönderildiğinde burada görünecektir.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Scripts -->
+  <script src="/js/webrtc.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

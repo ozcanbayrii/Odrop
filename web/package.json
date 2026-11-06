@@ -1,0 +1,16 @@
+{
+  "name": "odrop-p2p",
+  "version": "1.0.0",
+  "description": "ODrop Web - Serverless P2P Lossless File Transfer (AirDrop for Web)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": ["webrtc", "p2p", "airdrop", "file-transfer", "lossless"],
+  "author": "ODrop",
+  "license": "MIT",
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}
