@@ -4,114 +4,240 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="ODrop Web">
-  <title>ODrop Web — Doğrudan P2P Kayıpsız Dosya Aktarımı (AirDrop)</title>
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="ozcan.work | ODrop">
+  <title>ozcan.work — ODrop P2P Kayıpsız Dosya Aktarımı</title>
   <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <div class="container">
-    <!-- Header -->
-    <header>
-      <div class="brand">
-        <img src="/icons/favicon.svg" alt="ODrop Logo" class="brand-icon">
-        <div>
-          <h1>ODrop Web</h1>
-          <p>Sunucusuz Doğrudan P2P Aktarım</p>
-        </div>
-      </div>
-      <div class="device-badge" id="my-device-name">
-        📱 Cihazınız
-      </div>
-    </header>
 
-    <!-- Connection Status Bar -->
-    <div class="connection-bar" id="connection-bar">
-      <div class="conn-status">
-        <div class="conn-dot"></div>
-        <span id="conn-text">İkinci cihaz bekleniyor... (QR Kodu okutun)</span>
+  <!-- Top Navbar (Matching ozcan.work) -->
+  <header class="top-nav">
+    <div class="nav-container">
+      <a href="/" class="brand-wrapper">
+        <span class="brand-title">ozcan.work</span>
+        <span class="brand-badge">DROP</span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#" class="active" data-filter="all">Tümü</a></li>
+          <li><a href="#pairing-card" data-filter="pairing">Eşleşme</a></li>
+          <li><a href="#transfer-card" data-filter="transfer">Gönderim</a></li>
+          <li><a href="#files-section" data-filter="files">Dosyalar</a></li>
+          <li><a href="https://ozcan.work" target="_blank" rel="noopener">ozcan.work ↗</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="btn-icon" id="theme-toggle" title="Karanlık/Aydınlık Tema">
+          🌙
+        </button>
+        <button class="btn-black" id="room-code-btn" title="Bağlantıyı kopyala">
+          ✨ Oda: ...
+        </button>
       </div>
-      <button class="room-pill" id="room-code-btn" title="Bağlantıyı kopyalamak için tıklayın">
-        Oda: ...
+    </div>
+  </header>
+
+  <!-- Page Container -->
+  <main class="page-container">
+
+    <!-- Announcement Box -->
+    <section class="announcement-box" id="announcement">
+      <p class="announcement-text">
+        Bu alanı; iPhone ve bilgisayarınız arasında hiçbir üçüncü taraf sunucuya ihtiyaç duymadan, sıfır kalite kaybıyla doğrudan (P2P) dosya aktarabilmeniz için kurguladım. Dosyalar hiçbir sunucuya kaydedilmez, cihazlar arasında şifreli ve doğrudan akar.
+      </p>
+      <button class="announcement-close" onclick="document.getElementById('announcement').style.display='none'">
+        ✕
       </button>
-    </div>
+    </section>
 
-    <!-- Main Grid: QR Pairing & Dropzone -->
-    <div class="grid-main">
-      <!-- QR Pairing Card -->
-      <div class="card">
-        <div class="card-title">
-          <h2>📲 Cihazla Eşleş</h2>
-        </div>
-        <div class="qr-container">
-          <div class="qr-box">
-            <img id="qr-img" src="" alt="Eşleşme QR Kodu">
-          </div>
-          <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.4;">
-            iPhone kameranız ile QR kodu okutun veya yukarıdaki oda linkini diğer cihaza gönderin.
-          </p>
-          <div class="lossless-pill">
-            🔒 Uçtan Uca Şifreli • Dosyalar Sunucuya Kaydedilmez
-          </div>
-        </div>
-      </div>
+    <!-- Content Grid -->
+    <div class="content-grid">
 
-      <!-- Dropzone / Transfer Card -->
-      <div class="card">
-        <div class="card-title">
-          <h2>⚡ Hızlı Gönderim</h2>
-          <span class="lossless-pill" style="margin-top:0;">💎 %100 Orijinal Kalite</span>
+      <!-- Left Sidebar (Filtrele) -->
+      <aside class="sidebar">
+        <div class="sidebar-timeline-dot"></div>
+
+        <div class="sidebar-header">
+          <div>
+            <h2 class="sidebar-title">Filtrele</h2>
+            <div class="sidebar-subtitle">GÖRÜNÜMÜ DARALT</div>
+          </div>
+          <button class="btn-icon" style="width:28px; height:28px; font-size:0.75rem;" title="Daralt">
+            ⌃
+          </button>
         </div>
 
-        <div class="dropzone disabled" id="dropzone">
-          <div class="radar-animation">
-            <div class="radar-wave"></div>
-            <div class="radar-wave"></div>
-            <div class="radar-wave"></div>
-            <div class="radar-center">📡</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-item active" data-type="all">
+            <div class="sidebar-item-left">
+              <span class="sidebar-icon">🗞️</span>
+              <span>Tüm Aktarımlar</span>
+            </div>
+            <span class="sidebar-count" id="count-all">0</span>
+          </li>
+          <li class="sidebar-item" data-type="photo">
+            <div class="sidebar-item-left">
+              <span class="sidebar-icon">📸</span>
+              <span>Fotoğraflar</span>
+            </div>
+            <span class="sidebar-count" id="count-photos">0</span>
+          </li>
+          <li class="sidebar-item" data-type="video">
+            <div class="sidebar-item-left">
+              <span class="sidebar-icon">🎬</span>
+              <span>Videolar</span>
+            </div>
+            <span class="sidebar-count" id="count-videos">0</span>
+          </li>
+          <li class="sidebar-item" data-type="document">
+            <div class="sidebar-item-left">
+              <span class="sidebar-icon">📄</span>
+              <span>Belgeler & PDF</span>
+            </div>
+            <span class="sidebar-count" id="count-docs">0</span>
+          </li>
+          <li class="sidebar-item" onclick="document.getElementById('pairing-card').scrollIntoView({behavior:'smooth'})">
+            <div class="sidebar-item-left">
+              <span class="sidebar-icon">📲</span>
+              <span>Eşleşme QR</span>
+            </div>
+            <span class="sidebar-count">P2P</span>
+          </li>
+        </ul>
+
+        <!-- Sidebar Connection Status -->
+        <div class="sidebar-status-card">
+          <div class="status-badge">
+            <span class="status-dot" id="status-dot"></span>
+            <span id="sidebar-status-text">İkinci Cihaz Bekleniyor</span>
           </div>
-          <h3 id="drop-title" style="font-size:1.05rem; font-weight:600; margin-bottom:6px;">
-            Önce diğer cihazla bağlanın
+          <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;" id="sidebar-device-label">
+            📱 Cihazınız: ...
+          </div>
+        </div>
+      </aside>
+
+      <!-- Right Main Feed -->
+      <section class="feed-stream">
+
+        <!-- Card 1: Pairing Card -->
+        <article class="feed-card" id="pairing-card">
+          <div class="card-top-bar">
+            <div class="domain-badge">
+              <div class="domain-icon">📲</div>
+              <span>odrop.ozcan.work</span>
+            </div>
+            <span class="card-arrow">→</span>
+          </div>
+
+          <div class="card-meta-line">
+            <span class="meta-category">P2P EŞLEŞTİRME</span>
+            <span>•</span>
+            <span id="card-room-label">Oda: ...</span>
+            <span>•</span>
+            <span>WebRTC DataChannel</span>
+          </div>
+
+          <h3 class="card-heading">
+            iPhone ile Doğrudan Eşleşin [ DOĞRUDAN P2P ]
           </h3>
-          <p style="font-size:0.82rem; color:var(--text-muted);">
-            Galeriden fotoğraf/video veya dosya seçmek için dokunun
+
+          <p class="card-desc">
+            iPhone kameranız ile aşağıdaki QR kodu okutun veya oda bağlantısını kopyalayıp tarayıcınızda açın. Cihazlar uçtan uca şifreli olarak doğrudan birbirine bağlanacaktır.
           </p>
-          <input type="file" id="file-input" multiple accept="image/*,video/*,.heic,.heif,.dng,.mov,.mp4,.pdf,.zip,*" style="display:none;">
-          <div class="lossless-pill">
-            🛡️ HEIC • 4K 60fps MOV • ProRAW • Sıkıştırmasız
-          </div>
-        </div>
 
-        <!-- Transfer Progress Card -->
-        <div class="progress-card" id="progress-card">
-          <div class="progress-header">
-            <span id="progress-text">Aktarılıyor...</span>
-            <span id="progress-speed" style="color:var(--accent-cyan); font-weight:600;">0 MB/s</span>
+          <!-- QR Container -->
+          <div class="qr-layout">
+            <div class="qr-box">
+              <img id="qr-img" src="" alt="Eşleşme QR Kodu">
+            </div>
+            <div class="qr-info-side">
+              <div class="code-pill">
+                <span id="room-link-text">Bağlantı hazırlanıyor...</span>
+                <button class="btn-black" style="padding:4px 10px; font-size:0.75rem;" onclick="copyRoomLink()">
+                  Kopyala
+                </button>
+              </div>
+              <p style="font-size:0.78rem; color:var(--text-muted); line-height:1.4;">
+                💡 <b>İpucu:</b> İki cihazın aynı anda bu adreste olması yeterlidir. Dosyalar internet sunucusuna yüklenmez, doğrudan aktarılır.
+              </p>
+            </div>
           </div>
-          <div class="progress-bg">
-            <div class="progress-bar" id="progress-bar"></div>
+
+          <div class="tags-row" style="margin-top:16px;">
+            <span class="tag-pill tag-yellow">PROTOTİP</span>
+            <span class="tag-pill tag-green">UÇTAN UCA ŞİFRELİ</span>
+            <span class="tag-pill tag-blue">SUNUCUSUZ</span>
           </div>
-        </div>
-      </div>
+        </article>
+
+        <!-- Card 2: File Transfer / Dropzone Card -->
+        <article class="feed-card" id="transfer-card">
+          <div class="card-top-bar">
+            <div class="domain-badge">
+              <div class="domain-icon">⚡</div>
+              <span>odrop.ozcan.work</span>
+            </div>
+            <span class="card-arrow">→</span>
+          </div>
+
+          <div class="card-meta-line">
+            <span class="meta-category">KAYIPSIZ AKTARIM</span>
+            <span>•</span>
+            <span>SIFIR SIKIŞTIRMA</span>
+            <span>•</span>
+            <span>100% ORİJİNAL</span>
+          </div>
+
+          <h3 class="card-heading">
+            Fotoğraf, Video ve Dosya Gönderimi [ KARARLI ]
+          </h3>
+
+          <p class="card-desc">
+            Göndermek istediğiniz fotoğraf veya 4K videoları bu alana bırakın veya galerinizden seçin. Dosyalar hiçbir yeniden sıkıştırmaya (transcoding) uğramadan doğrudan alıcı cihaza yazılır.
+          </p>
+
+          <!-- Dropzone -->
+          <div class="dropzone-box disabled" id="dropzone">
+            <span class="dropzone-icon" id="drop-icon">📡</span>
+            <div class="dropzone-title" id="drop-title">Önce iPhone ile Eşleşin</div>
+            <div class="dropzone-sub">Fotoğraf arşivi, 4K video veya belge seçmek için dokunun</div>
+            <input type="file" id="file-input" multiple accept="image/*,video/*,.heic,.heif,.dng,.mov,.mp4,.pdf,.zip,*" style="display:none;">
+          </div>
+
+          <!-- Progress -->
+          <div class="transfer-progress" id="progress-card">
+            <div class="progress-info">
+              <span id="progress-text">Aktarılıyor...</span>
+              <span id="progress-speed" style="font-weight:700;">0 MB/s</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" id="progress-bar"></div>
+            </div>
+          </div>
+
+          <div class="tags-row" style="margin-top:16px;">
+            <span class="tag-pill tag-green">KARARLI</span>
+            <span class="tag-pill tag-blue">HEIC & ProRAW</span>
+            <span class="tag-pill tag-purple">4K 60FPS MOV</span>
+            <span class="tag-pill tag-yellow">PDF & ZIP</span>
+          </div>
+        </article>
+
+        <!-- Dynamically appended received files will appear here like blog feed cards -->
+        <div id="files-stream-container"></div>
+
+      </section>
+
     </div>
+  </main>
 
-    <!-- File Activity / Download Card -->
-    <div class="card">
-      <div class="card-title">
-        <h2>📥 Alınan Dosyalar</h2>
-        <span style="font-size:0.8rem; color:var(--text-muted);">Otomatik olarak tarayıcınızın İndirilenler klasörüne kaydedilir</span>
-      </div>
-      <div class="file-list" id="file-list">
-        <div class="empty-state">
-          Henüz dosya alınmadı. Bağlı cihazdan dosya gönderildiğinde burada görünecektir.
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Toast Notification -->
-  <div class="toast" id="toast"></div>
+  <!-- Toast Notice -->
+  <div class="toast-notice" id="toast"></div>
 
   <!-- Scripts -->
   <script src="/js/webrtc.js"></script>

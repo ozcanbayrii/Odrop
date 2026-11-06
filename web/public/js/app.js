@@ -1,6 +1,5 @@
 /**
- * ODrop Web Application Controller
- * Manages UI, WebSocket signaling, QR code generation, and P2P transfers.
+ * ODrop Web Controller — ozcan.work Design System Integration
  */
 
 let p2p = null;
@@ -8,7 +7,9 @@ let ws = null;
 let currentRoom = null;
 let isConnected = false;
 
-// Format file size
+// File counts
+const counts = { all: 0, photo: 0, video: 0, document: 0 };
+
 function formatBytes(bytes) {
   if (bytes < 1024) return bytes + ' B';
   if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
@@ -16,18 +17,24 @@ function formatBytes(bytes) {
   return (bytes / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
 }
 
-// Device detection
-function getDeviceName() {
-  const ua = navigator.userAgent;
-  if (/iPhone/i.test(ua)) return '📱 iPhone';
-  if (/iPad/i.test(ua)) return '📱 iPad';
-  if (/Android/i.test(ua)) return '📱 Android';
-  if (/Mac/i.test(ua)) return '💻 Mac';
-  if (/Windows/i.test(ua)) return '💻 Windows PC';
-  return '💻 Bilgisayar';
+function getFileCategory(name) {
+  const ext = (name.split('.').pop() || '').toLowerCase();
+  if (['jpg', 'jpeg', 'png', 'heic', 'heif', 'dng', 'webp', 'gif'].includes(ext)) return 'photo';
+  if (['mov', 'mp4', 'm4v', 'mkv', 'avi'].includes(ext)) return 'video';
+  if (['pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt', 'pages', 'numbers'].includes(ext)) return 'document';
+  return 'other';
 }
 
-// Audio Chime using Web Audio API (Zero external audio file dependency!)
+function getDeviceName() {
+  const ua = navigator.userAgent;
+  if (/iPhone/i.test(ua)) return 'iPhone';
+  if (/iPad/i.test(ua)) return 'iPad';
+  if (/Android/i.test(ua)) return 'Android';
+  if (/Mac/i.test(ua)) return 'Mac';
+  if (/Windows/i.test(ua)) return 'Windows PC';
+  return 'Bilgisayar';
+}
+
 function playChime() {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -35,10 +42,10 @@ function playChime() {
     const gain = ctx.createGain();
 
     osc.type = 'sine';
-    osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
-    osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15); // A5
+    osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15);
 
-    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+    gain.gain.setValueAtTime(0.12, ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
 
     osc.connect(gain);
@@ -46,12 +53,9 @@ function playChime() {
 
     osc.start();
     osc.stop(ctx.currentTime + 0.4);
-  } catch (e) {
-    // AudioContext might be blocked until user gesture
-  }
+  } catch (e) {}
 }
 
-// Toast notification
 function showToast(msg) {
   const toast = document.getElementById('toast');
   if (!toast) return;
@@ -60,8 +64,7 @@ function showToast(msg) {
   setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
-// Copy text helper
-function copyText(text, msg = 'Kopyalandı! 📋') {
+function copyText(text, msg = 'Bağlantı kopyalandı! 📋') {
   if (navigator.clipboard) {
     navigator.clipboard.writeText(text).then(() => showToast(msg));
   } else {
@@ -75,13 +78,41 @@ function copyText(text, msg = 'Kopyalandı! 📋') {
   }
 }
 
-// Initialize on DOM Ready
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('my-device-name').textContent = getDeviceName();
+function copyRoomLink() {
+  const fullUrl = `${window.location.origin}/?room=${currentRoom}`;
+  copyText(fullUrl, 'Oda bağlantısı kopyalandı! 📋');
+}
 
+// DOM Ready
+document.addEventListener('DOMContentLoaded', () => {
+  // Device label
+  const devName = getDeviceName();
+  const devEl = document.getElementById('sidebar-device-label');
+  if (devEl) devEl.textContent = `📱 Bu Cihaz: ${devName}`;
+
+  initTheme();
   initSignaling();
   initDropzone();
+  initSidebarFilters();
 });
+
+// Theme Toggle
+function initTheme() {
+  const btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+
+  const saved = localStorage.getItem('odrop-theme');
+  if (saved === 'dark') {
+    document.body.classList.add('dark-mode');
+    btn.textContent = '☀️';
+  }
+
+  btn.onclick = () => {
+    const isDark = document.body.classList.toggle('dark-mode');
+    btn.textContent = isDark ? '☀️' : '🌙';
+    localStorage.setItem('odrop-theme', isDark ? 'dark' : 'light');
+  };
+}
 
 // Setup WebSocket Signaling
 function initSignaling() {
@@ -96,7 +127,6 @@ function initSignaling() {
     }
   });
 
-  // P2P Event handlers
   p2p.onConnectionStateChange = (state) => {
     updateConnectionUI(state === 'connected');
   };
@@ -107,8 +137,8 @@ function initSignaling() {
 
   p2p.onFileReceived = (fileData) => {
     playChime();
-    showToast(`🎉 Alındı: ${fileData.name}`);
-    appendReceivedFile(fileData);
+    showToast(`🎉 Dosya alındı: ${fileData.name}`);
+    appendFileCard(fileData);
     hideProgressUI();
   };
 
@@ -117,9 +147,6 @@ function initSignaling() {
   };
 
   ws.onopen = () => {
-    console.log('[Signaling] WebSocket bağlandı.');
-
-    // Check room from URL query
     const urlParams = new URLSearchParams(window.location.search);
     const roomParam = urlParams.get('room');
 
@@ -143,7 +170,7 @@ function initSignaling() {
 
         case 'peer-joined': {
           showToast(`⚡ ${data.peerDevice} bağlandı!`);
-          document.getElementById('conn-text').textContent = `${data.peerDevice} ile eşleşildi...`;
+          document.getElementById('sidebar-status-text').textContent = `${data.peerDevice} ile Bağlandı`;
           p2p.init(data.shouldInitiate);
           break;
         }
@@ -170,52 +197,57 @@ function initSignaling() {
   };
 
   ws.onclose = () => {
-    console.log('[Signaling] Bağlantı kesildi, tekrar deneniyor...');
     setTimeout(initSignaling, 3000);
   };
 }
 
-// Update Room UI and QR Code
+// Room UI & QR Code
 function updateRoomUI(room) {
-  // Update browser URL without reloading
   const newUrl = `${window.location.origin}/?room=${room}`;
   window.history.replaceState({}, '', newUrl);
 
   const roomBtn = document.getElementById('room-code-btn');
   if (roomBtn) {
-    roomBtn.textContent = `Oda: #${room}`;
+    roomBtn.textContent = `✨ Oda: #${room}`;
     roomBtn.onclick = () => copyText(newUrl, 'Oda bağlantısı kopyalandı! 📋');
   }
 
-  // Generate QR Code with free API
+  const cardRoomLabel = document.getElementById('card-room-label');
+  if (cardRoomLabel) cardRoomLabel.textContent = `Oda: #${room}`;
+
+  const roomLinkText = document.getElementById('room-link-text');
+  if (roomLinkText) roomLinkText.textContent = newUrl;
+
   const qrImg = document.getElementById('qr-img');
   if (qrImg) {
-    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(newUrl)}&bgcolor=ffffff&color=090d16`;
+    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(newUrl)}&bgcolor=ffffff&color=111827`;
   }
 }
 
-// Update Connection UI
+// Connection State UI
 function updateConnectionUI(connected) {
   isConnected = connected;
-  const bar = document.getElementById('connection-bar');
-  const text = document.getElementById('conn-text');
+
+  const dot = document.getElementById('status-dot');
+  const text = document.getElementById('sidebar-status-text');
   const dropzone = document.getElementById('dropzone');
   const dropTitle = document.getElementById('drop-title');
+  const dropIcon = document.getElementById('drop-icon');
 
   if (connected) {
-    bar.classList.add('connected');
-    text.innerHTML = `<span style="color:#34d399">🟢 Doğrudan P2P Bağlandı (Sunucusuz & Kayıpsız)</span>`;
-    dropzone.classList.remove('disabled');
-    dropzone.classList.add('connected-active');
-    dropTitle.textContent = 'Fotoğraf veya Dosyaları Buraya Bırakın';
+    if (dot) dot.classList.add('connected');
+    if (text) text.innerHTML = `<span style="color:#059669; font-weight:700;">🟢 P2P Bağlandı</span>`;
+    if (dropzone) dropzone.classList.remove('disabled');
+    if (dropTitle) dropTitle.textContent = 'Fotoğraf veya Dosyaları Buraya Bırakın';
+    if (dropIcon) dropIcon.textContent = '📂';
     playChime();
-    showToast('🚀 Doğrudan P2P bağlantı kuruldu!');
+    showToast('🚀 Cihazlar doğrudan birbirine bağlandı!');
   } else {
-    bar.classList.remove('connected');
-    text.textContent = 'İkinci cihaz bekleniyor... (QR Kodu okutun)';
-    dropzone.classList.add('disabled');
-    dropzone.classList.remove('connected-active');
-    dropTitle.textContent = 'Önce diğer cihazla bağlanın';
+    if (dot) dot.classList.remove('connected');
+    if (text) text.textContent = 'İkinci Cihaz Bekleniyor';
+    if (dropzone) dropzone.classList.add('disabled');
+    if (dropTitle) dropTitle.textContent = 'Önce iPhone ile Eşleşin';
+    if (dropIcon) dropIcon.textContent = '📡';
   }
 }
 
@@ -241,7 +273,7 @@ function hideProgressUI() {
   }, 1200);
 }
 
-// Dropzone & File Sending Logic
+// Dropzone & Sending
 function initDropzone() {
   const dropzone = document.getElementById('dropzone');
   const fileInput = document.getElementById('file-input');
@@ -283,7 +315,6 @@ function initDropzone() {
   };
 }
 
-// Batch file sender
 async function sendFilesBatch(files) {
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
@@ -301,27 +332,101 @@ async function sendFilesBatch(files) {
   hideProgressUI();
 }
 
-// Append file to history table
-function appendReceivedFile(file) {
-  const container = document.getElementById('file-list');
-  const empty = container.querySelector('.empty-state');
-  if (empty) empty.remove();
+// Append Received File as ozcan.work Feed Card
+function appendFileCard(file) {
+  const container = document.getElementById('files-stream-container');
+  if (!container) return;
 
-  const item = document.createElement('div');
-  item.className = 'file-item';
+  const category = getFileCategory(file.name);
+  counts.all++;
+  if (counts[category] !== undefined) counts[category]++;
+  updateCountsUI();
 
-  item.innerHTML = `
-    <div class="file-left">
-      <div class="file-icon">📥</div>
-      <div>
-        <div class="file-name" title="${file.name}">${file.name}</div>
-        <div class="file-subtext">${formatBytes(file.size)} • ${file.date}</div>
+  const catNames = {
+    photo: 'FOTOĞRAF',
+    video: 'VİDEO',
+    document: 'BELGE',
+    other: 'DOSYA'
+  };
+  const catPills = {
+    photo: 'tag-blue',
+    video: 'tag-purple',
+    document: 'tag-yellow',
+    other: 'tag-green'
+  };
+
+  const card = document.createElement('article');
+  card.className = `feed-card file-card file-type-${category}`;
+
+  card.innerHTML = `
+    <div class="card-top-bar">
+      <div class="domain-badge">
+        <div class="domain-icon">📥</div>
+        <span>odrop.ozcan.work</span>
       </div>
+      <a href="${file.url}" download="${file.name}" class="card-arrow" title="İndir">↓</a>
     </div>
-    <a href="${file.url}" download="${file.name}" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;">
-      Kaydet 💾
-    </a>
+
+    <div class="card-meta-line">
+      <span class="meta-category">${catNames[category] || 'DOSYA'}</span>
+      <span>•</span>
+      <span>${formatBytes(file.size)}</span>
+      <span>•</span>
+      <span>${file.date}</span>
+      <span>•</span>
+      <span>P2P DOĞRUDAN AKTARIM</span>
+    </div>
+
+    <h3 class="card-heading">
+      ${file.name} [ İNDİRİLDİ ]
+    </h3>
+
+    <p class="card-desc">
+      Orijinal çözünürlük, renk profili ve tüm EXIF metadata verileriyle doğrudan iPhone'dan kayıpsız olarak alındı ve tarayıcınızın İndirilenler klasörüne kaydedildi.
+    </p>
+
+    <div class="tags-row" style="margin-top:12px;">
+      <span class="tag-pill ${catPills[category] || 'tag-green'}">${catNames[category]}</span>
+      <span class="tag-pill tag-green">KAYDEDİLDİ</span>
+      <span class="tag-pill tag-blue">100% ORİJİNAL</span>
+      <a href="${file.url}" download="${file.name}" class="btn-black" style="padding:4px 12px; font-size:0.75rem; margin-left:auto;">
+        💾 Tekrar Kaydet
+      </a>
+    </div>
   `;
 
-  container.insertBefore(item, container.firstChild);
+  container.insertBefore(card, container.firstChild);
+}
+
+function updateCountsUI() {
+  const allEl = document.getElementById('count-all');
+  const photoEl = document.getElementById('count-photos');
+  const videoEl = document.getElementById('count-videos');
+  const docEl = document.getElementById('count-docs');
+
+  if (allEl) allEl.textContent = counts.all;
+  if (photoEl) photoEl.textContent = counts.photo;
+  if (videoEl) videoEl.textContent = counts.video;
+  if (docEl) docEl.textContent = counts.document;
+}
+
+// Sidebar filtering
+function initSidebarFilters() {
+  const items = document.querySelectorAll('.sidebar-menu .sidebar-item[data-type]');
+  items.forEach(item => {
+    item.onclick = () => {
+      items.forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+
+      const filter = item.getAttribute('data-type');
+      const cards = document.querySelectorAll('.file-card');
+      cards.forEach(card => {
+        if (filter === 'all' || card.classList.contains(`file-type-${filter}`)) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    };
+  });
 }
