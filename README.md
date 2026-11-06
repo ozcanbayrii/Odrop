@@ -1,84 +1,100 @@
 # 📡 ODrop — 100% Lossless AirDrop for Windows & Web
-### *iPhone, PC ve Tüm Cihazlar Arasında Sıfır Kalite Kaybıyla Dosya Aktarımı*
+### *Instant, Lossless Peer-to-Peer File Transfer for iPhone, PC, and Any Device*
+
+<p align="left">
+  <strong>Language:</strong> English | <a href="README_TR.md">Türkçe</a>
+</p>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Platform: Windows | Web | iOS](https://img.shields.io/badge/Platform-Windows%20%7C%20Web%20%7C%20iOS-brightgreen.svg)]()
 [![P2P: WebRTC DataChannel](https://img.shields.io/badge/P2P-WebRTC%20DataChannel-orange.svg)]()
+[![Release](https://img.shields.io/github/v/release/ozcanbayrii/Odrop?color=purple)](https://github.com/ozcanbayrii/Odrop/releases)
 
-ODrop, iPhone ve Windows bilgisayarınız arasında **fotoğraf, 4K/ProRes video, ProRAW, PDF ve tüm dosyaları** hiçbir sıkıştırma veya kalite kaybı olmadan (**%100 Lossless**) aktarmanızı sağlayan modern, açık kaynaklı bir dosya paylaşım çözümüdür.
-
-İki farklı kullanım modu sunar:
-1. **🌐 WebRTC P2P (Sıfır Kurulum):** Tarayıcı üzerinden doğrudan cihazlar arası uçtan uca şifreli ve sunucusuz aktarım.
-2. **💻 Windows Masaüstü Uygulaması:** Sistem tepsisinde (System Tray) arka planda 7/24 sessizce çalışan ve gelen dosyaları doğrudan `İndirilenler\ODrop` klasörüne kaydeden bağımsız istemci.
+> 🚀 **Live Web App:** [https://odrop.ozcan.work/](https://odrop.ozcan.work/)  
+> *No app installation required — open in iPhone Safari & PC browser to pair via QR code and transfer files directly.*
 
 ---
 
-## 🚀 Öne Çıkan Özellikler / Key Features
+## ⚡ Overview
 
-- **💎 Sıfır Kalite Kaybı (%100 Lossless):**
-  - HEIC, JPEG, Apple ProRAW (`.DNG`), 4K 60fps HDR MOV, ProRes videolar ve tüm formatlar bit düzeyinde orijinal haliyle korunur.
-  - Kamera lens bilgisi, diyafram, ISO, çekim tarihi ve konum gibi tüm **EXIF / metadata verileri** eksiksiz kalır.
-- **🌐 Tarayıcıdan Tarayıcıya Doğrudan P2P (WebRTC):**
-  - Dosyalar hiçbir ara sunucuya yüklenmez, depolanmaz ve okunmaz; doğrudan iki cihaz arasında şifreli WebRTC DataChannel üzerinden akar.
-- **📲 iOS Kestirmeler (Apple Shortcuts) Entegrasyonu:**
-  - iPhone Galerisinde istediğiniz fotoğrafları seçip **Paylaş ➔ ODrop** diyerek tek dokunuşla bilgisayarınıza gönderebilirsiniz.
-- **🌐 Çoklu Dil Desteği (TR / EN):**
-  - Hem web arayüzünde hem de masaüstü uygulamasında tek tıkla Türkçe ve İngilizce geçişi.
-- **🔔 Windows 10 / 11 Bildirimleri (Native Toast):**
-  - Dosya aktarımı bittiğinde Windows bildirimi ve ses çalar, tek tıkla klasörü açabilirsiniz.
-- **🌓 Aydınlık / Karanlık Tema:**
-  - Modern, minimalist ve pürüzsüz arayüz tasarımı.
+**ODrop** is a modern, open-source file transfer tool built to bring Apple's AirDrop experience to Windows and the Web with **zero quality compression (100% Lossless)**.
+
+It provides two flexible operating modes:
+1. **🌐 WebRTC P2P Web Client (Zero-Install):** Open [https://odrop.ozcan.work/](https://odrop.ozcan.work/) on your PC and iPhone. Devices establish an end-to-end encrypted direct P2P data channel with 64KB chunk streaming.
+2. **💻 Windows Desktop Client (Portable):** A standalone background client running 24/7 in the Windows System Tray that automatically saves incoming files directly to your `Downloads\ODrop` folder with native Windows 10/11 notifications.
 
 ---
 
-## 📦 Kurulum ve Çalıştırma
+## 💎 Key Features
 
-### 1. Web Sürümü (Node.js)
+- **🎯 100% Lossless Bit-for-Bit Quality:**
+  - Preserves original Apple ProRAW (`.DNG`), HEIC, JPEG, 4K 60fps HDR MOV, ProRes videos, and large documents without any transcoding or lossy compression.
+  - All **EXIF / Camera metadata** (aperture, ISO, lens info, timestamp, GPS) are fully preserved.
+- **🔒 True Serverless Peer-to-Peer (WebRTC DataChannel):**
+  - Files never pass through or get stored on any cloud server. Data flows directly between the two devices across your network.
+- **📲 iOS Shortcuts (Share Sheet) Integration:**
+  - Select photos in the iOS Photos app, tap **Share ➔ ODrop**, and send them directly to your PC with one tap.
+- **🌐 Dual Language Support (EN / TR):**
+  - Switch between English and Turkish on both the web interface and the desktop app with one click.
+- **🔔 Native Windows 10 / 11 Notifications:**
+  - Visual and audio chime when files arrive, with a quick-open button to reveal files in File Explorer.
+- **🌓 Light / Dark Mode:**
+  - Minimalist, distraction-free aesthetic with instant theme switching.
+
+---
+
+## 🚀 Quick Start
+
+### 1. Zero-Install Web Mode (Recommended)
+Simply open the live deployment on your devices:
+👉 **[https://odrop.ozcan.work/](https://odrop.ozcan.work/)**
+
+1. Open on your PC to generate an instant pairing QR code.
+2. Scan the QR code with your iPhone camera.
+3. Devices connect in under a second — pick photos and send!
+
+### 2. Standalone Windows Desktop Client
+Download the latest portable release:
+👉 **[Download from GitHub Releases](https://github.com/ozcanbayrii/Odrop/releases)**
+
+- No installation needed — double click `ODrop.exe` to run.
+- Runs quietly in your system tray and listens for incoming transfers.
+
+---
+
+## 🛠️ Local Development & Self-Hosting
+
+### Web App (Node.js & WebSocket Signaling)
 ```bash
 cd web
 npm install
 npm start
 ```
-Tarayıcınızda açın: `http://localhost:3000`
+Starts on `http://localhost:3000`.
 
-### 2. Windows Masaüstü Sürümü (Python / Standalone)
-Hazır `.exe` veya `.zip` sürümünü doğrudan çalıştırabilirsiniz:
-- `ODrop-Windows.zip` arşivini açın ve `ODrop.exe` dosyasına çift tıklayın.
-- Sağ alttaki Windows Sistem Tepsisinde ODrop logosu belirecektir.
-
-Kaynak koddan çalıştırmak için:
+### Python Desktop App & FastAPI Server
 ```bash
 pip install -r requirements.txt
 python main.py
 ```
 
----
-
-## 📱 iPhone Kurulumu (Apple Shortcuts / Web)
-
-### Yöntem 1: WebRTC QR Kod (En Kolay & Sıfır Kurulum)
-1. Bilgisayarınızda veya sunucunuzda ODrop Web sayfasını açın.
-2. iPhone kameranızla ekrandaki QR kodu okutun.
-3. Cihazlar 1 saniyede doğrudan eşleşir; fotoğrafları seçip gönderin!
-
-### Yöntem 2: iOS Kestirmeler (Galeri Paylaşım Menüsü)
-1. iPhone'da **Kestirmeler (Shortcuts)** uygulamasını açın.
-2. Yeni kestirme oluşturup adını **ODrop** yapın.
-3. Paylaşma Sayfasında Göster'i açın.
-4. "URL İçeriğini Al" (POST /api/upload) adımıyla bilgisayarınızın yerel IP'sine bağlayın.
+To build a standalone Windows binary:
+```bash
+python -m PyInstaller --onefile --noconsole --name "ODrop" --version-file version.txt --add-data "app/static;app/static" --add-data "app/templates;app/templates" main.py
+```
 
 ---
 
-## 🛡️ Neden ODrop?
+## 🛡️ Comparison: Why ODrop?
 
-| Yöntem | Kalite Kaybı? | EXIF / Metadata? | Dosya Boyut Sınırı | Hız |
+| Method | Quality Loss? | EXIF Metadata? | File Size Limit | Speed |
 |---|---|---|---|---|
-| **WhatsApp / Telegram** | ❌ Yeniden sıkıştırır | ❌ Silinir | Sınırlı | İnternet kotası harcar |
-| **E-Posta** | ❌ Sıkıştırabilir | ⚠️ Kısmi | 25 MB limit | Yavaş |
-| **Bulut (Drive/iCloud)** | ⚠️ İndirme zahmeti | Korunur | Kota sınırı | İnternet hızına bağlı |
-| **ODrop** | ✅ **%100 Orijinal** | ✅ **Tüm EXIF korunur** | **Limitsiz (4K / ProRes)** | **Maksimum Donanım Hızı** |
+| **WhatsApp / Telegram** | ❌ Heavy compression | ❌ Stripped | Restricted | Consumes mobile quota |
+| **Email** | ❌ Resizes images | ⚠️ Partial | 25 MB max | Slow |
+| **Cloud (Drive/iCloud)** | ⚠️ Manual upload/download | Preserved | Storage quota limits | Limited by upload speed |
+| **ODrop** | ✅ **100% Lossless** | ✅ **Full EXIF Preserved** | **Unlimited (4K/ProRes)** | **Full Network Bandwidth** |
 
 ---
 
-## 📄 Lisans
-Bu proje [MIT Lisansı](LICENSE) kapsamında açık kaynaklı olarak sunulmaktadır.
+## 📄 License
+Released under the [MIT License](LICENSE).
