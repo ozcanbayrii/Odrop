@@ -12,8 +12,16 @@ const I18N = {
     statusWaiting: "İkinci cihaz bekleniyor... (QR Kodu okutun)",
     statusConnected: "🟢 P2P Bağlandı (Doğrudan & Kayıpsız)",
     devicePrefix: "📱 Bu Cihaz:",
-    pairTitle: "iPhone ile Eşleş",
-    pairDesc: "iPhone kameranızla QR kodu okutun veya bağlantıyı paylaşın.",
+    pairTitle: "Cihaz Bağlantısı",
+    pairDesc: "Farklı ağlardaki iki cihazı bağlantı koduyla eşleştirin.",
+    myCodeLabel: "Bu Cihazın Bağlantı Kodu",
+    btnCopyCode: "Kodu Kopyala",
+    btnCopyLink: "Linki Kopyala",
+    btnToggleQR: "QR Kod",
+    qrScanHint: "Yakındaki cihazın kamerasıyla okutarak da doğrudan bağlanabilirsiniz.",
+    joinCodeLabel: "Veya Karşı Tarafın Kodunu Girin:",
+    btnJoin: "⚡ Bağlan",
+    toastCodeCopied: "Bağlantı kodu kopyalandı! 📋",
     btnCopy: "Kopyala",
     pillEncrypted: "Uçtan Uca Şifreli",
     pillP2P: "Sunucusuz P2P",
@@ -68,8 +76,16 @@ const I18N = {
     statusWaiting: "Waiting for second device... (Scan QR code)",
     statusConnected: "🟢 P2P Connected (Direct & Lossless)",
     devicePrefix: "📱 This Device:",
-    pairTitle: "Pair with iPhone",
-    pairDesc: "Scan the QR code with iPhone camera or share the room link.",
+    pairTitle: "Device Connection",
+    pairDesc: "Pair any two devices across different networks using a connection code.",
+    myCodeLabel: "This Device's Connection Code",
+    btnCopyCode: "Copy Code",
+    btnCopyLink: "Copy Link",
+    btnToggleQR: "QR Code",
+    qrScanHint: "You can also scan this QR code with a nearby device's camera to connect directly.",
+    joinCodeLabel: "Or Enter Remote Device Code:",
+    btnJoin: "⚡ Connect",
+    toastCodeCopied: "Connection code copied! 📋",
     btnCopy: "Copy",
     pillEncrypted: "End-to-End Encrypted",
     pillP2P: "Serverless P2P",
@@ -235,9 +251,53 @@ function copyText(text, msg) {
   }
 }
 
+function formatRoomCode(code) {
+  const s = String(code || '').trim();
+  if (s.length === 6) return `${s.slice(0, 3)} ${s.slice(3)}`;
+  return s;
+}
+
+function copyRoomCode() {
+  if (!currentRoom) return;
+  copyText(formatRoomCode(currentRoom), t('toastCodeCopied'));
+}
+
 function copyRoomLink() {
+  if (!currentRoom) return;
   const fullUrl = `${window.location.origin}/?room=${currentRoom}`;
   copyText(fullUrl, t('toastCopied'));
+}
+
+function toggleQRFrame() {
+  const c = document.getElementById('qr-container');
+  if (!c) return;
+  const isHidden = c.style.display === 'none' || !c.style.display;
+  c.style.display = isHidden ? 'block' : 'none';
+  const btn = document.getElementById('toggle-qr-btn');
+  if (btn) btn.style.background = isHidden ? 'var(--bg-hover)' : '';
+}
+
+function joinRoomFromInput() {
+  const input = document.getElementById('join-code-input');
+  if (!input) return;
+  const raw = input.value.trim().replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+  if (!raw || raw.length < 3) {
+    showToast('Lütfen geçerli bir bağlantı kodu girin.');
+    return;
+  }
+  if (currentRoom && raw === currentRoom.toUpperCase()) {
+    showToast('Zaten bu odadasınız.');
+    return;
+  }
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    showToast(`Odaya bağlanılıyor: #${formatRoomCode(raw)}`);
+    ws.send(JSON.stringify({
+      type: 'join-room',
+      room: raw,
+      device: getDeviceName()
+    }));
+    input.value = '';
+  }
 }
 
 // DOM Ready
@@ -246,6 +306,13 @@ document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   initSignaling();
   initDropzone();
+
+  const joinInput = document.getElementById('join-code-input');
+  if (joinInput) {
+    joinInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') joinRoomFromInput();
+    });
+  }
 });
 
 // Theme Toggle
@@ -355,11 +422,15 @@ function initSignaling() {
 }
 
 function updateRoomUI(room) {
+  const formatted = formatRoomCode(room);
   const newUrl = `${window.location.origin}/?room=${room}`;
   window.history.replaceState({}, '', newUrl);
 
+  const displayEl = document.getElementById('display-room-code');
+  if (displayEl) displayEl.textContent = formatted;
+
   const roomBtn = document.getElementById('room-code-btn');
-  if (roomBtn) roomBtn.textContent = `✨ ${t('roomPrefix')} #${room}`;
+  if (roomBtn) roomBtn.textContent = `✨ ${t('roomPrefix')} #${formatted}`;
 
   const linkInput = document.getElementById('room-link-input');
   if (linkInput) linkInput.value = newUrl;

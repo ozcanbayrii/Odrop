@@ -52,46 +52,59 @@
       <div class="pill pill-gray" id="device-label">📱 Bu Cihaz: ...</div>
     </div>
 
-    <!-- Uzaktan Köprü Aktarımı Banner -->
-    <section class="card" style="margin-bottom: 24px; border: 1.5px solid #3b82f6; background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);">
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
-        <div style="flex:1; min-width:280px;">
-          <div style="display:inline-flex; align-items:center; gap:6px; background:#eff6ff; color:#1d4ed8; padding:3px 10px; border-radius:999px; font-size:0.75rem; font-weight:600; margin-bottom:8px;">
-            <span>🌐</span> <span data-i18n="remoteBadge">YENİ: Uzaktan Köprü Aktarımı</span>
-          </div>
-          <h2 class="card-title" style="margin:0 0 6px 0;" data-i18n="remoteTitle">Farklı Ağdaki Birinden Kayıpsız Dosya Alın</h2>
-          <p class="card-desc" style="margin:0; font-size:0.88rem; color:var(--text-muted); line-height:1.5;" data-i18n="remoteDesc">
-            Farklı bir ağdaki (mobil veri, başka bir Wi-Fi veya uzaktaki) herhangi birinin tek tıkla doğrudan bilgisayarınıza sıfır kalite kaybıyla 4K video ve fotoğraf göndermesini sağlayın.
-          </p>
-        </div>
-        <div style="flex-shrink:0;">
-          <a href="/inbox" class="btn-black" style="padding:12px 22px; font-size:0.92rem; text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
-            <span>🔗</span> <span data-i18n="btnOpenInbox">Davet Linki Paneline Git</span> <span>→</span>
-          </a>
-        </div>
-      </div>
-    </section>
-
     <!-- Main Tool Grid: 2 Side-by-Side Focused Cards -->
     <div class="tool-grid">
 
-      <!-- Card 1: Pairing -->
+      <!-- Card 1: Pairing & Room Code -->
       <section class="card">
-        <h2 class="card-title" data-i18n="pairTitle">iPhone ile Eşleş</h2>
-        <p class="card-desc" data-i18n="pairDesc">iPhone kameranızla QR kodu okutun veya bağlantıyı paylaşın.</p>
+        <h2 class="card-title" data-i18n="pairTitle">Cihaz Bağlantısı</h2>
+        <p class="card-desc" data-i18n="pairDesc">Farklı ağlardaki iki cihazı bağlantı koduyla eşleştirin.</p>
 
-        <div class="qr-center">
-          <div class="qr-frame">
-            <img id="qr-img" src="" alt="Eşleşme QR Kodu">
+        <!-- Bu Cihazın Kodu -->
+        <div style="background:var(--bg-hover); border:1px solid var(--border); border-radius:12px; padding:18px 16px; margin-bottom:14px; text-align:center;">
+          <div style="font-size:0.75rem; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); margin-bottom:6px;" data-i18n="myCodeLabel">
+            Bu Cihazın Bağlantı Kodu
           </div>
-
-          <div class="link-row">
-            <input type="text" class="link-input" id="room-link-input" readonly value="Bağlantı hazırlanıyor...">
-            <button class="btn-black" onclick="copyRoomLink()" data-i18n="btnCopy">Kopyala</button>
+          <div id="display-room-code" style="font-family:var(--font-mono); font-size:2.2rem; font-weight:700; letter-spacing:4px; color:var(--text-main); margin:4px 0 12px; user-select:all;">
+            ------
+          </div>
+          <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
+            <button class="btn-black" onclick="copyRoomCode()" style="padding:7px 14px; font-size:0.82rem;">
+              📋 <span data-i18n="btnCopyCode">Kodu Kopyala</span>
+            </button>
+            <button class="btn-outline" onclick="copyRoomLink()" style="padding:7px 14px; font-size:0.82rem;">
+              🔗 <span data-i18n="btnCopyLink">Linki Kopyala</span>
+            </button>
+            <button class="btn-outline" id="toggle-qr-btn" onclick="toggleQRFrame()" style="padding:7px 12px; font-size:0.82rem;">
+              📱 <span data-i18n="btnToggleQR">QR Kod</span>
+            </button>
           </div>
         </div>
 
-        <div class="pill-row">
+        <!-- QR Frame (Opsiyonel / Gizlenebilir) -->
+        <div class="qr-center" id="qr-container" style="display:none; margin-bottom:14px;">
+          <div class="qr-frame" style="margin:0 auto 10px;">
+            <img id="qr-img" src="" alt="Eşleşme QR Kodu">
+          </div>
+          <p style="font-size:0.75rem; color:var(--text-muted); margin:0;" data-i18n="qrScanHint">
+            Yakındaki cihazın kamerasıyla okutarak da doğrudan bağlanabilirsiniz.
+          </p>
+        </div>
+
+        <!-- Karşı Tarafın Koduna Bağlan -->
+        <div style="padding-top:14px; border-top:1px dashed var(--border); margin-top:4px;">
+          <label for="join-code-input" style="font-size:0.8rem; font-weight:600; color:var(--text-main); display:block; margin-bottom:6px;" data-i18n="joinCodeLabel">
+            Veya Karşı Tarafın Kodunu Girin:
+          </label>
+          <div class="link-row">
+            <input type="text" class="link-input" id="join-code-input" placeholder="Örn: 482 193" maxlength="12" style="font-size:1.05rem; font-weight:600; text-align:center; letter-spacing:2px;">
+            <button class="btn-black" id="join-code-btn" onclick="joinRoomFromInput()" style="padding:8px 18px;" data-i18n="btnJoin">
+              ⚡ Bağlan
+            </button>
+          </div>
+        </div>
+
+        <div class="pill-row" style="margin-top:16px;">
           <span class="pill pill-green" data-i18n="pillEncrypted">Uçtan Uca Şifreli</span>
           <span class="pill pill-blue" data-i18n="pillP2P">Sunucusuz P2P</span>
           <span class="pill pill-yellow" data-i18n="pillDirect">Doğrudan Aktarım</span>

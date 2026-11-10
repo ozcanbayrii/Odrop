@@ -252,16 +252,27 @@ wss.on('connection', (ws, req) => {
 
     switch (data.type) {
       // ------------------------------------------------------------------
-      // Klasik QR oda modu (değişmedi, sadece TURN bilgisi eklendi)
+      // Genel Bağlantı Kodu / P2P Oda Modu (Herkese Açık)
       // ------------------------------------------------------------------
       case 'join-room': {
-        currentRoom = cleanText(data.room, 12).toUpperCase();
-        if (!currentRoom) currentRoom = crypto.randomBytes(4).toString('hex').slice(0, 5).toUpperCase();
+        const reqRoom = cleanText(data.room, 16).replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+
+        // Eğer kullanıcı zaten bir odadaysa, eski odadan temizce ayrıl
+        if (currentRoom && rooms.has(currentRoom)) {
+          const oldClients = rooms.get(currentRoom);
+          oldClients.delete(clientId);
+          for (const [, client] of oldClients) send(client.ws, { type: 'peer-left' });
+          if (oldClients.size === 0) rooms.delete(currentRoom);
+          currentRoom = null;
+        }
+
+        // Kod belirtilmemişse 6 haneli temiz bir rakam üret (örn: 482193)
+        currentRoom = reqRoom || Math.floor(100000 + Math.random() * 900000).toString();
         if (!rooms.has(currentRoom)) rooms.set(currentRoom, new Map());
         const roomClients = rooms.get(currentRoom);
 
         if (roomClients.size >= 2) {
-          send(ws, { type: 'error', message: 'Oda dolu (Maksimum 2 cihaz)' });
+          send(ws, { type: 'error', message: 'Bu bağlantı odası dolu (Maksimum 2 cihaz).' });
           currentRoom = null;
           return;
         }
