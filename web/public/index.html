@@ -21,16 +21,13 @@
       </a>
 
       <div class="header-actions">
-        <a href="/inbox" class="btn-outline" style="border-color:#3b82f6; color:#2563eb; font-weight:600;" title="Farklı ağdaki birinden kayıpsız dosya al">
-          <span>🔗</span> <span data-i18n="navRemoteInbox">Uzaktan Dosya Al</span>
-        </a>
-        <a href="https://github.com/ozcanbayrii/Odrop/releases/download/v1.0.0/ODrop.exe" class="btn-black" title="GitHub Releases Güvenli İndir" target="_blank">
+        <a href="https://github.com/ozcanbayrii/Odrop/releases/download/v1.0.0/ODrop.exe" class="btn-black hide-mobile" title="GitHub Releases Güvenli İndir" target="_blank">
           <span>💻</span> <span data-i18n="btnWinDownload">Windows İndir (.exe)</span>
         </a>
-        <button class="btn-outline" id="room-code-btn" onclick="copyRoomLink()" title="Oda bağlantısını kopyala">
+        <button class="btn-outline hide-mobile" id="room-code-btn" onclick="copyRoomLink()" title="Oda bağlantısını kopyala">
           ✨ <span data-i18n="roomPrefix">Oda:</span> ...
         </button>
-        <button class="btn-outline btn-icon" id="lang-toggle" onclick="toggleLanguage()" title="TR / EN" style="font-weight:700; font-size:0.75rem; padding:6px 10px; min-width:42px;">
+        <button class="btn-outline btn-icon" id="lang-toggle" onclick="toggleLanguage()" title="TR / EN" style="font-weight:700; font-size:0.75rem; padding:6px 10px; min-width:38px;">
           EN
         </button>
         <button class="btn-outline btn-icon" id="theme-toggle" title="Karanlık/Aydınlık Tema">
@@ -43,20 +40,19 @@
   <!-- App Main Content -->
   <main class="app-container">
 
-    <!-- Status Banner -->
-    <div class="status-banner">
-      <div class="status-left">
-        <div class="status-dot" id="status-dot"></div>
-        <span id="status-text" data-i18n="statusWaiting">İkinci cihaz bekleniyor... (QR Kodu okutun)</span>
+    <!-- VIEW 1: Connect Screen (Bağlantı & Kod Ekranı) -->
+    <div id="view-connect">
+      <!-- Status Banner -->
+      <div class="status-banner">
+        <div class="status-left">
+          <div class="status-dot" id="status-dot"></div>
+          <span id="status-text" data-i18n="statusWaiting">İkinci cihaz bekleniyor... Kodu girin veya paylaşın</span>
+        </div>
+        <div class="pill pill-gray" id="device-label">📱 Bu Cihaz: ...</div>
       </div>
-      <div class="pill pill-gray" id="device-label">📱 Bu Cihaz: ...</div>
-    </div>
 
-    <!-- Main Tool Grid: 2 Side-by-Side Focused Cards -->
-    <div class="tool-grid">
-
-      <!-- Card 1: Pairing & Room Code -->
-      <section class="card">
+      <!-- Pairing & Room Code Card -->
+      <section class="card connect-card" style="max-width:680px; margin:0 auto 24px;">
         <h2 class="card-title" data-i18n="pairTitle">Cihaz Bağlantısı</h2>
         <p class="card-desc" data-i18n="pairDesc">Farklı ağlardaki iki cihazı bağlantı koduyla eşleştirin.</p>
 
@@ -110,53 +106,81 @@
           <span class="pill pill-yellow" data-i18n="pillDirect">Doğrudan Aktarım</span>
         </div>
       </section>
+    </div>
 
-      <!-- Card 2: Dropzone / Transfer -->
-      <section class="card">
-        <h2 class="card-title" data-i18n="sendTitle">Kayıpsız Dosya Gönder</h2>
-        <p class="card-desc" data-i18n="sendDesc">Fotoğraf, 4K video veya belgeleri sürükleyin ya da galeriden seçin.</p>
+    <!-- VIEW 2: Active Transfer Screen (Bağlantı Kurulduğunda Açılan Aktarım Ekranı) -->
+    <div id="view-transfer" style="display:none; max-width:760px; margin:0 auto 24px;">
+      
+      <!-- Connected Device Banner -->
+      <div class="connected-banner">
+        <div class="connected-left">
+          <div class="status-dot connected"></div>
+          <div>
+            <div class="connected-badge-row">
+              <span class="connected-badge">🟢 BAĞLANTI KURULDU</span>
+              <span class="connected-meta hide-mobile">Uçtan Uca Şifreli P2P</span>
+            </div>
+            <div class="connected-devices">
+              <span class="device-tag" id="remote-peer-title">📱 Uzak Cihaz</span>
+              <span class="connected-arrow">⇄</span>
+              <span class="device-tag" id="local-peer-title">💻 Bu Cihaz</span>
+            </div>
+          </div>
+        </div>
+        <button class="btn-outline disconnect-btn" onclick="disconnectRoom()" title="Bağlantıyı Sonlandır">
+          ✕ <span data-i18n="btnDisconnect">Ayrıl</span>
+        </button>
+      </div>
 
-        <!-- Dropzone -->
-        <div class="dropzone-area disabled" id="dropzone">
-          <div class="radar-circle" id="radar-icon">📡</div>
-          <div class="dropzone-main-text" id="drop-main-text" data-i18n="dropWaiting">Önce iPhone ile Eşleşin</div>
-          <div class="dropzone-sub-text" id="drop-sub-text" data-i18n="dropSub">Fotoğraf arşivi veya dosya seçmek için dokunun</div>
+      <!-- Active File Transfer Card -->
+      <section class="card active-transfer-card">
+        <div class="active-dropzone" id="dropzone" onclick="triggerFileInput()">
+          <div class="radar-circle" id="radar-icon">📁</div>
+          <h2 class="dropzone-main-text" id="drop-main-text" data-i18n="dropActiveTitle">
+            Fotoğraf, 4K Video veya Dosya Seçin
+          </h2>
+          <p class="dropzone-sub-text" id="drop-sub-text" data-i18n="dropActiveSub">
+            Galeriden seçmek veya dosya yüklemek için dokunun (Sıfır Kalite Kaybı)
+          </p>
+          <button class="btn-black upload-trigger-btn" type="button" style="pointer-events:none;">
+            📂 <span data-i18n="btnSelectFiles">Galeriden / Dosyalardan Seç</span>
+          </button>
           <input type="file" id="file-input" multiple accept="image/*,video/*,.heic,.heif,.dng,.mov,.mp4,.pdf,.zip,*" style="display:none;">
         </div>
 
         <!-- Transfer Progress -->
-        <div class="progress-panel" id="progress-panel">
+        <div class="progress-panel" id="progress-panel" style="display:none; margin-top:16px;">
           <div class="progress-labels">
-            <span id="progress-text">Aktarılıyor...</span>
-            <span id="progress-speed" style="font-weight:700;">0 MB/s</span>
+            <span id="progress-text" style="font-weight:600;">Aktarılıyor...</span>
+            <span id="progress-speed" style="font-weight:700; color:#2563eb;">0 MB/s</span>
           </div>
-          <div class="progress-track">
+          <div class="progress-track" style="margin-top:8px;">
             <div class="progress-bar" id="progress-bar"></div>
           </div>
         </div>
 
-        <div class="pill-row">
-          <span class="pill pill-green" data-i18n="pillOriginal">%100 Orijinal</span>
-          <span class="pill pill-blue">HEIC & ProRAW</span>
-          <span class="pill pill-yellow">4K 60FPS MOV</span>
+        <div class="pill-row" style="margin-top:16px;">
+          <span class="pill pill-green" data-i18n="pillOriginal">%100 Orijinal Kalite</span>
+          <span class="pill pill-blue">4K 60FPS Video</span>
+          <span class="pill pill-yellow">HEIC & ProRAW</span>
+          <span class="pill pill-gray">Sınırsız Boyut</span>
         </div>
       </section>
 
-    </div>
-
-    <!-- History / Received Files Card -->
-    <section class="history-card">
-      <div class="history-header">
-        <h3 style="font-family:var(--font-serif); font-size:1.15rem; font-weight:600;" data-i18n="historyTitle">Alınan Dosyalar</h3>
-        <span class="pill pill-gray" id="history-count">0 Dosya</span>
-      </div>
-
-      <div class="file-list" id="file-list">
-        <div class="empty-state" data-i18n="emptyState">
-          Henüz dosya alınmadı. Bağlı cihazdan gönderilen dosyalar doğrudan tarayıcınıza iner ve burada listelenir.
+      <!-- History / Received Files Card -->
+      <section class="history-card" style="margin-top:20px;">
+        <div class="history-header">
+          <h3 style="font-family:var(--font-serif); font-size:1.15rem; font-weight:600;" data-i18n="historyTitle">Alınan Dosyalar</h3>
+          <span class="pill pill-gray" id="history-count">0 Dosya</span>
         </div>
-      </div>
-    </section>
+
+        <div class="file-list" id="file-list">
+          <div class="empty-state" data-i18n="emptyState">
+            Henüz dosya alınmadı. Karşı tarafın gönderdiği dosyalar doğrudan inecek ve burada listelenecektir.
+          </div>
+        </div>
+      </section>
+    </div>
 
     <!-- Desktop App Download Option (Sürekli Kullanım) -->
     <section class="download-card" id="desktop-app">

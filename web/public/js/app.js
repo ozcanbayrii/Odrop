@@ -15,26 +15,33 @@ const I18N = {
     pairTitle: "Cihaz Bağlantısı",
     pairDesc: "Farklı ağlardaki iki cihazı bağlantı koduyla eşleştirin.",
     myCodeLabel: "Bu Cihazın Bağlantı Kodu",
+    yourCodeLabel: "Bu Cihazın Bağlantı Kodu",
     btnCopyCode: "Kodu Kopyala",
-    btnCopyLink: "Linki Kopyala",
+    btnCopyLink: "Linki Paylaş",
     btnToggleQR: "QR Kod",
-    qrScanHint: "Yakındaki cihazın kamerasıyla okutarak da doğrudan bağlanabilirsiniz.",
+    btnShowQR: "QR Kod",
+    qrScanHint: "Karşı taraf iPhone veya telefonunun kamerasıyla bu QR kodu okutarak anında bağlanabilir.",
     joinCodeLabel: "Veya Karşı Tarafın Kodunu Girin:",
-    btnJoin: "⚡ Bağlan",
+    joinLabel: "Veya Karşı Tarafın Kodunu Girin:",
+    btnJoin: "Bağlan",
+    btnConnect: "Bağlan",
     toastCodeCopied: "Bağlantı kodu kopyalandı! 📋",
     btnCopy: "Kopyala",
     pillEncrypted: "Uçtan Uca Şifreli",
     pillP2P: "Sunucusuz P2P",
     pillDirect: "Doğrudan Aktarım",
+    pillLossless: "Kayıpsız & Orijinal",
+    pillCellular: "Mobil Veri / Wi-Fi Destekli",
     sendTitle: "Kayıpsız Dosya Gönder",
     sendDesc: "Fotoğraf, 4K video veya belgeleri sürükleyin ya da galeriden seçin.",
     dropWaiting: "Önce iPhone ile Eşleşin",
     dropWaitingSub: "QR kodu okuttuktan sonra dosya seçebilirsiniz",
     dropReady: "Dosyaları Buraya Bırakın",
     dropReadySub: "veya galeriden fotoğraf/video seçmek için dokunun",
-    pillOriginal: "%100 Orijinal",
+    pillOriginal: "%100 Orijinal Kalite",
     historyTitle: "Alınan Dosyalar",
-    historyEmpty: "Henüz dosya alınmadı. Bağlı cihazdan gönderilen dosyalar doğrudan tarayıcınıza iner ve burada listelenir.",
+    historyEmpty: "Henüz dosya alınmadı. Karşı tarafın gönderdiği dosyalar doğrudan inecek ve burada listelenecektir.",
+    emptyState: "Henüz dosya alınmadı. Karşı tarafın gönderdiği dosyalar doğrudan inecek ve burada listelenecektir.",
     desktopTitle: "Windows İçin ODrop Masaüstü Uygulaması",
     desktopDesc: "Tarayıcıyı açık tutmak zorunda kalmadan sürekli dosya almak isteyenler için; Windows Sistem Tepsisinde (System Tray) arka planda 7/24 sessizce çalışan, gelen tüm fotoğrafları onay beklemeden doğrudan <b>İndirilenler\\ODrop</b> klasörüne kaydeden ve Windows 10/11 bildirimi veren masaüstü sürümünü indirin.",
     pillPortable: "Sıfır Kurulum (Portable)",
@@ -56,22 +63,24 @@ const I18N = {
     fileUnit: "Dosya",
     sending: "Gönderiliyor",
     receiving: "Alınıyor",
-    navRemoteInbox: "Uzaktan Dosya Al",
-    remoteBadge: "YENİ: Uzaktan Köprü Aktarımı",
-    remoteTitle: "Farklı Ağdaki Birinden Kayıpsız Dosya Alın",
-    remoteDesc: "Farklı bir ağdaki (mobil veri, başka bir Wi-Fi veya uzaktaki) herhangi birinin tek tıkla doğrudan bilgisayarınıza sıfır kalite kaybıyla 4K video ve fotoğraf göndermesini sağlayın.",
-    btnOpenInbox: "Davet Linki Paneline Git"
+    toastConnected: "🟢 Cihazlar bağlandı! Dosya gönderebilirsiniz.",
+    btnDisconnect: "Ayrıl",
+    dropActiveTitle: "Fotoğraf, 4K Video veya Dosya Seçin",
+    dropActiveSub: "Galeriden seçmek veya dosya yüklemek için dokunun (Sıfır Kalite Kaybı)",
+    btnSelectFiles: "Galeriden / Dosyalardan Seç",
+    toastDisconnected: "Bağlantı sonlandırıldı. Yeni bir oda oluşturuldu."
   },
   en: {
     pageTitle: "ODrop — Lossless File Transfer",
     btnWinDownload: "Download Windows (.exe)",
     btnExeDl: "Download ODrop.exe",
     linkZipDl: "Download as ZIP package",
-    navRemoteInbox: "Receive Remote Files",
-    remoteBadge: "NEW: Remote Bridge Transfer",
-    remoteTitle: "Receive Lossless Files From Any Network",
-    remoteDesc: "Receive original-quality 4K videos and photos directly to your PC from anyone, anywhere across cellular data or external Wi-Fi.",
-    btnOpenInbox: "Open Invite Links Panel",
+    toastConnected: "🟢 Devices connected! Ready to transfer files.",
+    btnDisconnect: "Disconnect",
+    dropActiveTitle: "Select Photos, 4K Videos, or Files",
+    dropActiveSub: "Tap to browse gallery or upload files (100% Lossless Quality)",
+    btnSelectFiles: "Select From Gallery / Files",
+    toastDisconnected: "Connection closed. New room generated.",
     roomPrefix: "Room:",
     statusWaiting: "Waiting for second device... (Scan QR code)",
     statusConnected: "🟢 P2P Connected (Direct & Lossless)",
@@ -79,26 +88,33 @@ const I18N = {
     pairTitle: "Device Connection",
     pairDesc: "Pair any two devices across different networks using a connection code.",
     myCodeLabel: "This Device's Connection Code",
+    yourCodeLabel: "This Device's Connection Code",
     btnCopyCode: "Copy Code",
-    btnCopyLink: "Copy Link",
+    btnCopyLink: "Share Link",
     btnToggleQR: "QR Code",
-    qrScanHint: "You can also scan this QR code with a nearby device's camera to connect directly.",
-    joinCodeLabel: "Or Enter Remote Device Code:",
-    btnJoin: "⚡ Connect",
+    btnShowQR: "QR Code",
+    qrScanHint: "The other person can scan this QR code with their iPhone or phone camera to connect instantly.",
+    joinCodeLabel: "Or Enter The Other Device's Code:",
+    joinLabel: "Or Enter The Other Device's Code:",
+    btnJoin: "Connect",
+    btnConnect: "Connect",
     toastCodeCopied: "Connection code copied! 📋",
     btnCopy: "Copy",
     pillEncrypted: "End-to-End Encrypted",
     pillP2P: "Serverless P2P",
     pillDirect: "Direct Transfer",
+    pillLossless: "Lossless & Original",
+    pillCellular: "Cellular & Wi-Fi Ready",
     sendTitle: "Send Lossless Files",
     sendDesc: "Drag & drop photos, 4K videos, documents or choose from gallery.",
     dropWaiting: "Pair with iPhone First",
     dropWaitingSub: "You can select files after scanning the QR code",
     dropReady: "Drop Photos or Files Here",
     dropReadySub: "or tap to browse your photo library or files",
-    pillOriginal: "100% Lossless",
+    pillOriginal: "100% Lossless Quality",
     historyTitle: "Received Files",
     historyEmpty: "No files received yet. Files sent from the connected device will download directly and appear here.",
+    emptyState: "No files received yet. Files sent from the connected device will download directly and appear here.",
     desktopTitle: "ODrop Desktop App for Windows",
     desktopDesc: "For continuous background transfers without keeping a browser open: download the standalone desktop client running 24/7 in your Windows system tray, automatically saving all photos directly to <b>Downloads\\ODrop</b> with native notifications.",
     pillPortable: "Zero Install (Portable)",
@@ -268,6 +284,23 @@ function copyRoomLink() {
   copyText(fullUrl, t('toastCopied'));
 }
 
+let currentPeerDevice = '';
+
+function triggerFileInput() {
+  const fi = document.getElementById('file-input');
+  if (fi) fi.click();
+}
+
+function disconnectRoom() {
+  if (p2p) p2p.cleanup();
+  currentPeerDevice = '';
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify({ type: 'join-room', room: '', device: getDeviceName() }));
+  }
+  updateConnectionUI(false);
+  showToast(t('toastDisconnected') || 'Bağlantı sonlandırıldı.');
+}
+
 function toggleQRFrame() {
   const c = document.getElementById('qr-container');
   if (!c) return;
@@ -279,18 +312,29 @@ function toggleQRFrame() {
 
 function joinRoomFromInput() {
   const input = document.getElementById('join-code-input');
+  const btn = document.getElementById('join-btn');
   if (!input) return;
   const raw = input.value.trim().replace(/[^A-Za-z0-9]/g, '').toUpperCase();
   if (!raw || raw.length < 3) {
-    showToast('Lütfen geçerli bir bağlantı kodu girin.');
+    showToast(currentLang === 'tr' ? 'Lütfen 6 haneli bağlantı kodunu girin.' : 'Please enter the 6-digit code.');
     return;
   }
   if (currentRoom && raw === currentRoom.toUpperCase()) {
-    showToast('Zaten bu odadasınız.');
+    showToast(currentLang === 'tr' ? 'Zaten bu odadasınız.' : 'Already in this room.');
     return;
   }
   if (ws && ws.readyState === WebSocket.OPEN) {
-    showToast(`Odaya bağlanılıyor: #${formatRoomCode(raw)}`);
+    if (btn) {
+      btn.textContent = currentLang === 'tr' ? 'Bağlanılıyor...' : 'Connecting...';
+      btn.disabled = true;
+      setTimeout(() => {
+        if (btn) {
+          btn.innerHTML = `<span data-i18n="btnConnect">${t('btnConnect')}</span> →`;
+          btn.disabled = false;
+        }
+      }, 4000);
+    }
+    showToast(currentLang === 'tr' ? `Odaya bağlanılıyor: #${formatRoomCode(raw)}` : `Connecting to room: #${formatRoomCode(raw)}`);
     ws.send(JSON.stringify({
       type: 'join-room',
       room: raw,
@@ -388,8 +432,10 @@ function initSignaling() {
         }
 
         case 'peer-joined': {
-          showToast(`⚡ ${data.peerDevice} ${t('toastPeerJoined')}`);
-          document.getElementById('status-text').textContent = `${data.peerDevice} ${t('statusConnected')}`;
+          currentPeerDevice = data.peerDevice || 'Uzak Cihaz';
+          showToast(`⚡ ${currentPeerDevice} ${t('toastPeerJoined')}`);
+          const statusText = document.getElementById('status-text');
+          if (statusText) statusText.textContent = `${currentPeerDevice} ${t('statusConnected')}`;
           p2p.setIceServers(data.iceServers);
           p2p.init(data.shouldInitiate);
           break;
@@ -401,6 +447,7 @@ function initSignaling() {
         }
 
         case 'peer-left': {
+          currentPeerDevice = '';
           showToast(t('toastPeerLeft'));
           updateConnectionUI(false);
           break;
@@ -444,6 +491,31 @@ function updateRoomUI(room) {
 function updateConnectionUI(connected, isLangSwitch = false) {
   isConnected = connected;
 
+  const viewConnect = document.getElementById('view-connect');
+  const viewTransfer = document.getElementById('view-transfer');
+  const remotePeerTitle = document.getElementById('remote-peer-title');
+  const localPeerTitle = document.getElementById('local-peer-title');
+
+  // Smoothly transition between Connect View and Active Transfer View
+  if (viewConnect && viewTransfer) {
+    if (connected) {
+      viewConnect.style.display = 'none';
+      viewTransfer.style.display = 'block';
+    } else {
+      viewConnect.style.display = 'block';
+      viewTransfer.style.display = 'none';
+    }
+  }
+
+  // Update peer device badges in transfer view
+  if (remotePeerTitle) {
+    const peerName = currentPeerDevice || t('remoteDevice') || 'Uzak Cihaz';
+    remotePeerTitle.textContent = `📱 ${peerName}`;
+  }
+  if (localPeerTitle) {
+    localPeerTitle.textContent = `💻 ${getDeviceName()}`;
+  }
+
   const dot = document.getElementById('status-dot');
   const text = document.getElementById('status-text');
   const dropzone = document.getElementById('dropzone');
@@ -455,12 +527,12 @@ function updateConnectionUI(connected, isLangSwitch = false) {
     if (dot) dot.classList.add('connected');
     if (text) text.innerHTML = `<span style="color:#059669; font-weight:600;">${t('statusConnected')}</span>`;
     if (dropzone) dropzone.classList.remove('disabled');
-    if (mainText) mainText.textContent = t('dropReady');
-    if (subText) subText.textContent = t('dropReadySub');
-    if (radarIcon) radarIcon.textContent = '⚡';
+    if (mainText) mainText.textContent = t('dropActiveTitle');
+    if (subText) subText.textContent = t('dropActiveSub');
+    if (radarIcon) radarIcon.textContent = '📁';
     if (!isLangSwitch) {
       playChime();
-      showToast('🚀 P2P Connected!');
+      showToast(t('toastConnected') || '🟢 Cihazlar bağlandı! Dosya gönderebilirsiniz.');
     }
   } else {
     if (dot) dot.classList.remove('connected');

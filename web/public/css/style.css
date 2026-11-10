@@ -254,20 +254,6 @@ body.dark-mode .card:hover {
   border-color: #3f3f46;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
-  border-radius: var(--radius-card);
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  transition: border-color 0.2s ease;
-}
-
-.card:hover {
-  border-color: #cbd5e1;
-}
-
-body.dark-mode .card:hover {
-  border-color: #3f3f46;
-}
 
 .card-title {
   font-family: var(--font-serif);
@@ -576,8 +562,9 @@ body.dark-mode .download-card:hover {
 }
 
 .btn-download-large {
-  background: var(--btn-black) !important;
-  color: var(--btn-black-text) !important;
+  background: #09090b !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 10px;
   padding: 12px 24px;
   font-size: 0.95rem;
@@ -585,18 +572,30 @@ body.dark-mode .download-card:hover {
   text-decoration: none;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
 }
 
-.btn-download-large span {
-  color: inherit !important;
+.btn-download-large * {
+  color: #ffffff !important;
 }
 
 .btn-download-large:hover {
-  opacity: 0.9;
+  opacity: 0.92;
   transform: translateY(-1px);
+}
+
+body.dark-mode .btn-download-large {
+  background: #ffffff !important;
+  color: #09090b !important;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 14px rgba(255, 255, 255, 0.08);
+}
+
+body.dark-mode .btn-download-large * {
+  color: #09090b !important;
 }
 
 /* Toast */
@@ -618,4 +617,275 @@ body.dark-mode .download-card:hover {
 
 .toast-notice.show {
   transform: translateY(0);
+}
+
+/* ==========================================================================
+   Mobile Responsive & Active Transfer UI Enhancements
+   ========================================================================== */
+
+/* Utility */
+@media (max-width: 768px) {
+  .hide-mobile {
+    display: none !important;
+  }
+  .header-container {
+    padding: 10px 14px;
+    height: 56px;
+  }
+  .header-actions {
+    gap: 6px;
+  }
+  .brand-name {
+    font-size: 1.15rem;
+  }
+  .brand-badge {
+    font-size: 0.6rem;
+    padding: 1px 5px;
+  }
+  .btn-outline.btn-icon {
+    padding: 6px 8px;
+    font-size: 0.75rem;
+    min-width: 36px;
+    height: 36px;
+  }
+  .app-container {
+    padding: 12px 10px 40px;
+    margin: 12px auto 40px;
+  }
+  .status-banner {
+    padding: 10px 14px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .status-left {
+    font-size: 0.82rem;
+  }
+  #device-label {
+    font-size: 0.72rem;
+  }
+  .card {
+    padding: 18px 12px;
+    border-radius: 14px;
+  }
+  .download-card {
+    padding: 18px 12px;
+  }
+  .download-actions {
+    width: 100%;
+  }
+  .btn-download-large {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 16px;
+    font-size: 0.88rem;
+  }
+  .code-box {
+    padding: 14px 10px;
+  }
+  .code-box-number {
+    font-size: 1.85rem !important;
+    letter-spacing: 2px !important;
+  }
+  .code-btn-row .btn-action {
+    flex: 1 1 45%;
+    justify-content: center;
+    font-size: 0.78rem;
+    padding: 8px 10px;
+  }
+  .join-input {
+    font-size: 0.95rem;
+    padding: 10px 8px;
+  }
+  .connected-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 12px;
+  }
+  .connected-devices {
+    font-size: 0.85rem;
+  }
+  .disconnect-btn {
+    align-self: flex-end;
+  }
+  .active-dropzone {
+    padding: 24px 14px;
+    min-height: 200px;
+  }
+  .upload-trigger-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 10px 16px;
+    font-size: 0.88rem;
+  }
+  .pill {
+    font-size: 0.72rem;
+    padding: 3px 8px;
+  }
+}
+
+/* Code Display Box */
+.code-box {
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 14px;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+.code-box-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.code-box-number {
+  font-family: var(--font-mono);
+  font-size: 2.3rem;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--text-main);
+  margin: 6px 0 12px;
+  user-select: all;
+}
+
+.code-btn-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.join-section {
+  padding-top: 14px;
+  border-top: 1px dashed var(--border);
+  margin-top: 4px;
+}
+
+.join-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-main);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.join-input {
+  font-size: 1.05rem;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 2px;
+}
+
+/* Connected Active Transfer Banner */
+.connected-banner {
+  background: var(--bg-card);
+  border: 1.5px solid #10b981;
+  border-radius: var(--radius-card);
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  box-shadow: 0 4px 18px rgba(16, 185, 129, 0.08);
+  animation: slide-down 0.25s ease;
+}
+
+@keyframes slide-down {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.connected-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.connected-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.connected-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #059669;
+  letter-spacing: 0.04em;
+}
+
+.connected-meta {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.connected-devices {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.connected-arrow {
+  color: #10b981;
+  font-weight: 700;
+}
+
+.disconnect-btn {
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-color: #ef4444;
+  color: #ef4444;
+  cursor: pointer;
+  border-radius: var(--radius-btn);
+  background: transparent;
+  transition: all 0.15s ease;
+}
+
+.disconnect-btn:hover {
+  background: #fee2e2;
+}
+
+body.dark-mode .disconnect-btn:hover {
+  background: #450a0a;
+}
+
+/* Active Dropzone */
+.active-dropzone {
+  border: 2px dashed #10b981;
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.04) 0%, transparent 100%);
+  border-radius: 16px;
+  padding: 36px 20px;
+  text-align: center;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  min-height: 240px;
+}
+
+.active-dropzone:hover, .active-dropzone.dragover {
+  border-color: #059669;
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.08) 0%, transparent 100%);
+}
+
+.upload-trigger-btn {
+  margin-top: 14px;
+  padding: 12px 24px;
+  font-size: 0.95rem;
 }
