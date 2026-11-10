@@ -16,3 +16,5 @@ web/public/downloads/*.exe
 web/data/
 web/.env
 *.odrop-part
+dist/*.zip
+
