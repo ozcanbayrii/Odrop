@@ -51,7 +51,7 @@ const I18N = {
     navRemoteInbox: "Uzaktan Dosya Al",
     remoteBadge: "YENİ: Uzaktan Köprü Aktarımı",
     remoteTitle: "Farklı Ağdaki Birinden Kayıpsız Dosya Alın",
-    remoteDesc: "Kız arkadaşınız veya başka biri nerede olursa olsun (mobil veri, farklı Wi-Fi) tek tıkla doğrudan bilgisayarınıza sıfır kalite kaybıyla 4K video ve fotoğraf göndersin.",
+    remoteDesc: "Farklı bir ağdaki (mobil veri, başka bir Wi-Fi veya uzaktaki) herhangi birinin tek tıkla doğrudan bilgisayarınıza sıfır kalite kaybıyla 4K video ve fotoğraf göndermesini sağlayın.",
     btnOpenInbox: "Davet Linki Paneline Git"
   },
   en: {
