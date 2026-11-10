@@ -37,7 +37,8 @@ class SystemTrayApp:
         menu = (
             item("ODrop'u Aç", self._action_show, default=True),
             item("İndirilenler Klasörünü Aç", self._action_open_folder),
-            item("Web Panelini Aç", self._action_open_web),
+            item("Yerel Web Panelini Aç", self._action_open_web),
+            item("🌐 Uzaktan Aktarım (odrop.ozcan.work)", lambda i, it: webbrowser.open("https://odrop.ozcan.work")),
             pystray.Menu.SEPARATOR,
             item(lambda _i: f"Uzak Gelen Kutusu: {remote_inbox.status_message}", lambda i, it: None, enabled=False),
             item("🔗 Davet Linki Oluştur (1 saat)", lambda i, it: self._action_invite(60)),

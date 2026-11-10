@@ -102,7 +102,8 @@ LANGUAGES = {
         "left_desc": "iPhone kameranızla veya tarayıcınızla okutun",
         "ip_prefix": "Yerel Ağ: ",
         "btn_folder": "📁 İndirilenler Klasörünü Aç",
-        "btn_web": "🌐 Web Panelini Aç (Tarayıcı)",
+        "btn_web": "🌐 Yerel Web Panelini Aç",
+        "btn_remote_web": "🚀 Uzaktan Aktarım (odrop.ozcan.work)",
         "btn_tunnel_start": "⚡ Dış Ağ Tüneli Başlat",
         "btn_tunnel_stop": "⚡ Tüneli Kapat",
         "btn_tunnel_loading": "⏳ Başlatılıyor...",
@@ -127,7 +128,8 @@ LANGUAGES = {
         "left_desc": "Scan with iPhone camera or browser",
         "ip_prefix": "Local Network: ",
         "btn_folder": "📁 Open Downloads Folder",
-        "btn_web": "🌐 Open Web Panel (Browser)",
+        "btn_web": "🌐 Open Local Web Panel",
+        "btn_remote_web": "🚀 Remote Transfer (odrop.ozcan.work)",
         "btn_tunnel_start": "⚡ Start Public Tunnel",
         "btn_tunnel_stop": "⚡ Stop Tunnel",
         "btn_tunnel_loading": "⏳ Starting...",
@@ -382,6 +384,20 @@ class MainWindow:
         self.btn_open_web._keep_custom_bg = True
         self.btn_open_web.pack(fill=tk.X, pady=3)
 
+        # Remote Web Bridge Button
+        self.btn_remote_web = tk.Button(
+            self.left_btn_frame,
+            text=self.l["btn_remote_web"],
+            font=FONT_SANS,
+            cursor="hand2",
+            relief="flat",
+            bd=0,
+            pady=6,
+            command=lambda: webbrowser.open("https://odrop.ozcan.work")
+        )
+        self.btn_remote_web._keep_custom_bg = True
+        self.btn_remote_web.pack(fill=tk.X, pady=3)
+
         # Tünel Butonu
         self.tunnel_btn = tk.Button(
             self.left_btn_frame,
@@ -559,6 +575,12 @@ class MainWindow:
             activebackground=t["btn_secondary_hover"],
             activeforeground=t["btn_secondary_fg"]
         )
+        self.btn_remote_web.configure(
+            bg="#2563eb",
+            fg="#ffffff",
+            activebackground="#1d4ed8",
+            activeforeground="#ffffff"
+        )
         self.tunnel_btn.configure(
             bg=t["btn_secondary_bg"],
             fg=t["btn_secondary_fg"],
@@ -636,6 +658,7 @@ class MainWindow:
         self.ip_pill.configure(text=f"{l['ip_prefix']}{get_primary_ip()}:{config.port}")
         self.btn_open_folder.configure(text=l["btn_folder"])
         self.btn_open_web.configure(text=l["btn_web"])
+        self.btn_remote_web.configure(text=l["btn_remote_web"])
         
         tunnel_txt = l["btn_tunnel_stop"] if tunnel.is_running else l["btn_tunnel_start"]
         self.tunnel_btn.configure(text=tunnel_txt)
