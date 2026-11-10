@@ -96,5 +96,11 @@ python -m PyInstaller --onefile --noconsole --name "ODrop" --version-file versio
 
 ---
 
+## 🔗 Invite Links (Remote Transfers)
+
+Someone on a different network can send files losslessly straight to your PC or browser via a single-use, time-limited invite link (`/s/<token>`). You approve each transfer; a self-hosted coturn relay is used when a direct P2P path isn't possible. See [docs/DAVET_LINKI.md](docs/DAVET_LINKI.md) (Turkish).
+
+---
+
 ## 📄 License
 Released under the [MIT License](LICENSE).

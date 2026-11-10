@@ -23,6 +23,11 @@ DEFAULT_SETTINGS: Dict[str, Any] = {
     "auto_open_folder": False,
     "remote_tunnel_enabled": False,
     "device_name": os.environ.get("COMPUTERNAME", "Windows PC"),
+    # Uzak gelen kutusu (davet linkleriyle başka ağlardan dosya alma)
+    "remote_inbox_enabled": False,
+    "remote_server_url": "wss://odrop.ozcan.work",
+    "remote_owner_key": "",
+    "remote_auto_accept": False,
 }
 
 class Config:
@@ -108,5 +113,22 @@ class Config:
     def remote_tunnel_enabled(self, value: bool):
         self._settings["remote_tunnel_enabled"] = value
         self.save()
+
+    # ---- Uzak gelen kutusu -------------------------------------------------
+    @property
+    def remote_inbox_enabled(self) -> bool:
+        return bool(self._settings.get("remote_inbox_enabled", False)) and bool(self.remote_owner_key)
+
+    @property
+    def remote_server_url(self) -> str:
+        return str(self._settings.get("remote_server_url", "wss://odrop.ozcan.work")).rstrip("/")
+
+    @property
+    def remote_owner_key(self) -> str:
+        return str(self._settings.get("remote_owner_key", "") or "")
+
+    @property
+    def remote_auto_accept(self) -> bool:
+        return bool(self._settings.get("remote_auto_accept", False))
 
 config = Config()

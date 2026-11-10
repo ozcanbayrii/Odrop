@@ -5,6 +5,7 @@ import pystray
 from pystray import MenuItem as item
 from app.config import config
 from app.core.notifier import Notifier
+from app.core.remote_inbox import remote_inbox, copy_to_clipboard
 
 def create_tray_icon_image() -> Image.Image:
     """Draws a clean 64x64 ODrop badge icon for the system tray."""
@@ -38,6 +39,11 @@ class SystemTrayApp:
             item("İndirilenler Klasörünü Aç", self._action_open_folder),
             item("Web Panelini Aç", self._action_open_web),
             pystray.Menu.SEPARATOR,
+            item(lambda _i: f"Uzak Gelen Kutusu: {remote_inbox.status_message}", lambda i, it: None, enabled=False),
+            item("🔗 Davet Linki Oluştur (1 saat)", lambda i, it: self._action_invite(60)),
+            item("🔗 Davet Linki Oluştur (24 saat)", lambda i, it: self._action_invite(1440)),
+            item("Gelen Kutusu Panelini Aç", self._action_open_inbox),
+            pystray.Menu.SEPARATOR,
             item("Çıkış", self._action_exit),
         )
 
@@ -58,6 +64,21 @@ class SystemTrayApp:
 
     def _action_open_web(self, icon, item):
         webbrowser.open(f"http://localhost:{config.port}")
+
+    def _action_invite(self, ttl_minutes: int):
+        try:
+            url = remote_inbox.create_invite(ttl_minutes)
+            copied = copy_to_clipboard(url)
+            hours = "1 saat" if ttl_minutes == 60 else "24 saat"
+            Notifier.show_toast(
+                title="🔗 Davet linki hazır" + (" (panoya kopyalandı)" if copied else ""),
+                message=f"{url}\nTek kullanımlık, {hours} geçerli.",
+            )
+        except Exception as e:
+            Notifier.show_toast(title="Davet linki oluşturulamadı", message=str(e))
+
+    def _action_open_inbox(self, icon, item):
+        webbrowser.open(f"{remote_inbox.http_base()}/inbox")
 
     def _action_exit(self, icon, item):
         if self.icon:

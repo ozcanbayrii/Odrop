@@ -83,5 +83,11 @@ En son taşınabilir sürümü indirin:
 
 ---
 
+## 🔗 Davet Linki ile Uzaktan Aktarım
+
+Başka biri, farklı bir ağdan bile, `odrop.ozcan.work/s/<davet>` linkiyle doğrudan senin bilgisayarına veya tarayıcına kayıpsız dosya gönderebilir. Linkler tek kullanımlık ve sürelidir, her gönderimde onayın istenir. Kurulum ve kullanım için: [docs/DAVET_LINKI.md](docs/DAVET_LINKI.md)
+
+---
+
 ## 📄 Lisans
 Bu proje [MIT Lisansı](LICENSE) altında açık kaynaklıdır.

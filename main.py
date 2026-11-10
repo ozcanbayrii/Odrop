@@ -25,6 +25,7 @@ from app.core.network import get_primary_ip
 from app.core.notifier import Notifier
 from gui.app_window import MainWindow
 from gui.tray import SystemTrayApp
+from app.core.remote_inbox import remote_inbox
 
 class ODropApplication:
     def __init__(self, headless: bool = False, no_tray: bool = False):
@@ -100,6 +101,8 @@ class ODropApplication:
         if self.tray_app:
             self.tray_app.stop()
 
+        remote_inbox.stop()
+
         if self.uvicorn_server:
             self.uvicorn_server.should_exit = True
 
@@ -113,6 +116,8 @@ class ODropApplication:
 
     def run(self):
         self.start_server()
+        if config.remote_inbox_enabled:
+            remote_inbox.start()
 
         if not self.headless:
             self.start_tray()

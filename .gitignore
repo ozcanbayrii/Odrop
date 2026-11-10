@@ -13,3 +13,6 @@ build/
 web/node_modules/
 web/public/downloads/*.zip
 web/public/downloads/*.exe
+web/data/
+web/.env
+*.odrop-part

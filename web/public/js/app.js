@@ -313,6 +313,7 @@ function initSignaling() {
         case 'peer-joined': {
           showToast(`⚡ ${data.peerDevice} ${t('toastPeerJoined')}`);
           document.getElementById('status-text').textContent = `${data.peerDevice} ${t('statusConnected')}`;
+          p2p.setIceServers(data.iceServers);
           p2p.init(data.shouldInitiate);
           break;
         }

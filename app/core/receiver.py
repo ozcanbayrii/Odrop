@@ -118,6 +118,14 @@ class FileReceiver:
                 total_bytes += len(chunk)
 
         elapsed = max(time.time() - start_time, 0.001)
+        return self.register_saved_file(target_path, raw_name, total_bytes, elapsed)
+
+    def register_saved_file(self, target_path: Path, raw_name: str, total_bytes: int, elapsed: float, sender: Optional[str] = None) -> Dict[str, Any]:
+        """Diske yazılmış bir dosyayı listeye ekler, ses/bildirim tetikler ve dinleyicileri haberdar eder.
+        Hem yerel HTTP yüklemeleri hem de uzak (davet linki) aktarımları bunu kullanır."""
+        target_path = Path(target_path)
+        save_dir = target_path.parent
+        elapsed = max(elapsed, 0.001)
         speed_mb_s = (total_bytes / (1024 * 1024)) / elapsed
 
         ext = target_path.suffix.lower()
@@ -133,17 +141,15 @@ class FileReceiver:
             "extension": ext,
             "timestamp": datetime.now().strftime("%H:%M:%S"),
             "date": datetime.now().strftime("%d.%m.%Y"),
+            "sender": sender,
         }
 
-        # Store in recent list (max 100)
         self.recent_files.insert(0, file_info)
         if len(self.recent_files) > 100:
             self.recent_files.pop()
 
-        # Play chime
         Notifier.play_chime()
 
-        # Trigger Windows Toast Notification
         icon_emoji = {
             "photo": "📸 Fotoğraf",
             "video": "🎬 Video",
@@ -152,16 +158,15 @@ class FileReceiver:
             "archive": "📦 Arşiv",
         }.get(category, "📁 Dosya")
 
+        from_txt = f" ({sender} gönderdi)" if sender else ""
         Notifier.show_toast(
             title=f"{icon_emoji} Alındı! ({file_info['formatted_size']})",
-            message=f"{target_path.name} başarıyla bilgisayara aktarıldı.",
+            message=f"{target_path.name} başarıyla bilgisayara aktarıldı.{from_txt}",
             file_path=str(target_path),
             folder_path=str(save_dir)
         )
 
-        # Notify WebSockets / GUI
         self._notify_listeners(file_info)
-
         return file_info
 
     def get_existing_files(self) -> List[Dict[str, Any]]:
