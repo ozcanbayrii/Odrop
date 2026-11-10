@@ -428,6 +428,18 @@
   // ------------------------------------------------------------ Init
   document.addEventListener('DOMContentLoaded', async () => {
     ODrop.initTheme();
+
+    // Check if key is passed via URL query parameter: /inbox?key=...
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const keyParam = urlParams.get('key');
+      if (keyParam) {
+        ownerKey = keyParam.trim();
+        ODrop.store(KEY_STORE, ownerKey);
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    } catch (_) {}
+
     if (fsSupported) dirHandle = (await idbGet('dir')) || null;
     updateSaveUI();
 

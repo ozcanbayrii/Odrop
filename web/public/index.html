@@ -21,6 +21,9 @@
       </a>
 
       <div class="header-actions">
+        <a href="/inbox" class="btn-outline" style="border-color:#3b82f6; color:#2563eb; font-weight:600;" title="Farklı ağdaki birinden kayıpsız dosya al">
+          <span>🔗</span> <span data-i18n="navRemoteInbox">Uzaktan Dosya Al</span>
+        </a>
         <a href="https://github.com/ozcanbayrii/Odrop/releases/download/v1.0.0/ODrop.exe" class="btn-black" title="GitHub Releases Güvenli İndir" target="_blank">
           <span>💻</span> <span data-i18n="btnWinDownload">Windows İndir (.exe)</span>
         </a>
@@ -48,6 +51,26 @@
       </div>
       <div class="pill pill-gray" id="device-label">📱 Bu Cihaz: ...</div>
     </div>
+
+    <!-- Uzaktan Köprü Aktarımı Banner -->
+    <section class="card" style="margin-bottom: 24px; border: 1.5px solid #3b82f6; background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+        <div style="flex:1; min-width:280px;">
+          <div style="display:inline-flex; align-items:center; gap:6px; background:#eff6ff; color:#1d4ed8; padding:3px 10px; border-radius:999px; font-size:0.75rem; font-weight:600; margin-bottom:8px;">
+            <span>🌐</span> <span data-i18n="remoteBadge">YENİ: Uzaktan Köprü Aktarımı</span>
+          </div>
+          <h2 class="card-title" style="margin:0 0 6px 0;" data-i18n="remoteTitle">Farklı Ağdaki Birinden Kayıpsız Dosya Alın</h2>
+          <p class="card-desc" style="margin:0; font-size:0.88rem; color:var(--text-muted); line-height:1.5;" data-i18n="remoteDesc">
+            Kız arkadaşınız veya başka biri nerede olursa olsun (mobil veri, farklı Wi-Fi) tek tıkla doğrudan bilgisayarınıza sıfır kalite kaybıyla 4K video ve fotoğraf göndersin.
+          </p>
+        </div>
+        <div style="flex-shrink:0;">
+          <a href="/inbox" class="btn-black" style="padding:12px 22px; font-size:0.92rem; text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+            <span>🔗</span> <span data-i18n="btnOpenInbox">Davet Linki Paneline Git</span> <span>→</span>
+          </a>
+        </div>
+      </div>
+    </section>
 
     <!-- Main Tool Grid: 2 Side-by-Side Focused Cards -->
     <div class="tool-grid">
