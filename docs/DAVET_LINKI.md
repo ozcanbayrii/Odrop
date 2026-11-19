@@ -1,75 +1,87 @@
-# 🔗 Davet Linki ile Uzaktan Kayıpsız Aktarım
+# Davet Linki ile Uzaktan Kayıpsız Aktarım
 
-Başka biri (farklı şehir, farklı ağ, mobil veri fark etmez) kendi telefonundan ya da bilgisayarından **doğrudan senin bilgisayarına veya tarayıcına** orijinal kalitede dosya gönderebilir.
+Başka biri (farklı şehir, farklı ağ veya mobil veri fark etmeksizin) kendi telefonundan ya da bilgisayarından doğrudan bilgisayarınıza veya tarayıcınıza orijinal kalitede dosya gönderebilir.
 
-```
- Gönderen (iPhone Safari)                 VPS (odrop.ozcan.work)              Sen
- ───────────────────────                  ──────────────────────              ───
- /s/<davet> linkini açar  ── istek ──▶   sinyal sunucusu  ── bildirim ──▶  💻 Windows uygulaması
-                                           (dosya görmez)                    🌐 /inbox sekmesi
-                          ◀────────── WebRTC P2P (DTLS şifreli) ──────────▶  "Kabul Et"
+```text
+ Gönderen (iPhone Safari)                 VPS (your-domain.com)               Siz
+ -----------------------                  ---------------------               ---
+ /s/<davet> linkini açar  -- istek ->    sinyal sunucusu  -- bildirim ->     Windows uygulaması
+                                          (dosya görmez)                      /inbox sekmesi
+                          <--------- WebRTC P2P (DTLS şifreli) --------->    "Kabul Et"
                           (doğrudan olmazsa coturn röle; veri yine şifreli)
 ```
 
-## Nasıl kullanılır?
+## Nasıl Kullanılır?
 
-1. **Davet linki oluştur**
-   - Tarayıcıdan: `https://odrop.ozcan.work/inbox` → sahip anahtarını gir → *Link Oluştur*.
-   - Ya da Windows uygulamasının tepsi menüsünden: **🔗 Davet Linki Oluştur (1 saat / 24 saat)**. Link panoya kopyalanır.
-2. Linki karşı tarafa WhatsApp vb. ile gönder.
-3. Karşı taraf linki açar, adını yazar, **Galeriden Seç** veya **Dosyalardan Seç** ile dosyaları seçip **Gönder**'e basar.
-4. Sende onay penceresi çıkar (Windows'ta sistem penceresi, tarayıcıda kart). **Kabul Et** dediğinde aktarım başlar.
+1. Davet linki oluşturun:
+   - Tarayıcıdan: `https://<sunucu-adresi>/inbox` sayfasına girin, sahip anahtarını yazıp "Link Oluştur" butonuna basın.
+   - Veya Windows uygulamasının tepsi menüsünden: "Davet Linki Oluştur (1 saat / 24 saat)" seçeneğini tıklayın. Link otomatik olarak panoya kopyalanır.
+2. Linki karşı tarafa mesajlaşma uygulamalarıyla iletin.
+3. Karşı taraf linki açar, adını yazar, galeriden veya dosyalardan seçim yaparak "Gönder" butonuna basar.
+4. Bilgisayarınızda onay penceresi çıkar (Windows'ta sistem onay kutusu, tarayıcıda onay kartı). "Kabul Et" dendiğinde aktarım başlar.
 5. Dosyalar:
-   - Windows uygulamasında doğrudan `İndirilenler\ODrop` klasörüne parça parça yazılır (boyut sınırı yok).
-   - Tarayıcıda (Chrome/Edge masaüstü) seçtiğin klasöre parça parça yazılır. Klasör seçmezsen ya da Safari/Firefox kullanıyorsan dosya önce belleğe alınır, bu yüzden çok büyük videolar için uygulamayı kullan.
+   - Windows uygulamasında doğrudan `İndirilenler\ODrop` klasörüne parça parça yazılır (dosya boyut sınırı yoktur).
+   - Masaüstü tarayıcısında (Chrome/Edge) seçilen klasöre doğrudan yazılır. Klasör seçilmezse veya Safari/Firefox kullanılıyorsa dosya önce belleğe alınır; büyük dosyalar için masaüstü uygulamasını kullanmanız önerilir.
 
-Davet linkleri **tek kullanımlık** ve **süreli** (15 dk – 7 gün). Kabul ettiğin anda link tükenir. Bekleyen linkleri `/inbox` sayfasından iptal edebilirsin.
+Davet linkleri tek kullanımlık ve sürelidir (15 dakika ile 7 gün arası). Aktarım kabul edildiği anda link geçersiz olur. Bekleyen linkleri `/inbox` sayfasından iptal edebilirsiniz.
 
-## Windows uygulaması ayarı
+## Windows Uygulaması Ayarları
 
-`odrop_settings.json` dosyasına ekle:
+Uygulamanın kurulu olduğu dizindeki `odrop_settings.json` dosyasına ekleyin:
 
 ```json
 {
   "remote_inbox_enabled": true,
-  "remote_server_url": "wss://odrop.ozcan.work",
+  "remote_server_url": "wss://your-domain.com",
   "remote_owner_key": "SUNUCUDAKI_ODROP_OWNER_KEY",
   "remote_auto_accept": false
 }
 ```
 
-`remote_auto_accept: true` yaparsan onay sorulmaz. Linkler zaten tek kullanımlık, ama yine de önerilmez.
+`remote_auto_accept: true` yapılırsa gelen dosyalarda onay sorulmadan doğrudan indirme başlar.
 
-Yeni bağımlılıklar: `pip install -r requirements.txt` (aiortc, websockets). Exe'yi yeniden derlemek için README'deki PyInstaller komutunu `ODrop.spec` ile çalıştır: `python -m PyInstaller ODrop.spec`.
+Gerekli Python bağımlılıkları:
+```bash
+pip install -r requirements.txt
+```
 
-## Sunucu kurulumu (VPS)
+Exe dosyasını yeniden derlemek için:
+```bash
+python -m PyInstaller ODrop.spec
+```
+
+## Sunucu Kurulumu (VPS)
 
 ```bash
 cd /ODROP/KLASORU && git pull
-sudo bash deploy/setup-vps.sh /ODROP/KLASORU odrop.ozcan.work
+sudo bash deploy/setup-vps.sh /ODROP/KLASORU your-domain.com
 ```
 
-Script yalnızca ODrop klasörüne ve coturn'e dokunur:
+Kurulum scripti yalnızca ODrop klasörüne ve coturn servisine işlem yapar:
 
-- `web/.env` oluşturur: `ODROP_OWNER_KEY` (sahip anahtarı), `TURN_SECRET`, `TURN_HOST`
-- coturn kurar ve `/etc/turnserver.conf` dosyasını yazar. Kısa ömürlü kimlik bilgisi kullanılır ve iç ağa röle engellenir. Sunucuda başka amaçla çalışan bir coturn varsa hiçbir şeyi değiştirmeden durur.
-- ufw aktifse yalnızca şu portları açar: `3478/udp+tcp`, `5349/tcp`, `49160-49260/udp`
-- pm2 ya da systemd sürecini bulup ODrop'u yeniden başlatır, önce de yedek alır (`/root/odrop-backup-*.tgz`)
+- `web/.env` dosyasını oluşturur: `ODROP_OWNER_KEY` (sahip anahtarı), `TURN_SECRET`, `TURN_HOST`
+- coturn kurar ve `/etc/turnserver.conf` dosyasını yapılandırır. Kısa ömürlü kimlik bilgisi kullanılır ve iç ağa yetkisiz röle engellenir.
+- Güvenlik duvarı (ufw) aktifse şu portları açar: `3478/udp+tcp`, `5349/tcp`, `49160-49260/udp`
+- pm2 veya systemd sürecini bulup ODrop'u yeniden başlatır, işlem öncesi yedek alır (`/root/odrop-backup-*.tgz`).
 
-Kontrol: `curl https://odrop.ozcan.work/healthz` → `{"ok":true,"invites":true,"turn":true}`
+Kurulum kontrolü:
+```bash
+curl https://your-domain.com/healthz
+```
+Beklenen yanıt: `{"ok":true,"invites":true,"turn":true}`
 
-## iPhone'da kalite notu
+## iPhone Kalite Notu
 
-Safari, Fotoğraflar'dan seçilen içeriği bazen uyumlu biçime dönüştürebilir. Örneğin HEIC fotoğraf JPEG'e, HEVC video H.264'e dönebilir. Bu, ODrop'tan önce, iOS seçicisinde olur. Garanti orijinal için:
+Safari, Fotoğraflar uygulamasından seçilen bazı medyaları uyumlu biçime dönüştürebilir (örneğin HEIC fotoğraf JPEG'e, HEVC video H.264'e çevrilebilir). Bu durum tarayıcı seçicisinde gerçekleşir. Orijinal dosyayı garanti altına almak için:
 
-- Seçicide **Seçenekler** görünüyorsa biçimi **Güncel** yap, ya da
-- Videoyu önce **Dosyalar**'a kaydet ve **Dosyalardan Seç** ile gönder.
+- Seçicide "Seçenekler" görünüyorsa biçimi "Güncel" olarak belirleyin, veya
+- Videoyu önce "Dosyalar" uygulamasına kaydedip "Dosyalardan Seç" seçeneğiyle gönderin.
 
-Aktarımın kendisi bit düzeyinde kayıpsızdır. Her dosyanın boyutu alıcıda doğrulanır ve gönderen ancak alıcı diske yazmayı bitirince "Teslim edildi" görür.
+Aktarım işlemi bit düzeyinde kayıpsızdır. Dosya boyutu alıcıda doğrulanır ve diske yazma işlemi tamamlandığında gönderene teslim edildi bilgisi iletilir.
 
 ## Güvenlik
 
-- Dosyalar sunucuda saklanmaz. Sunucu sadece eşleştirme (sinyal) yapar.
-- TURN rölesi kullanılsa bile veri WebRTC DTLS ile uçtan uca şifreli kalır. Röle içeriği göremez.
-- Davet token'ı 128 bit rastgeledir. Sayfalarda `Referrer-Policy: no-referrer` ve `noindex` vardır, QR kod tarayıcıda yerel üretilir.
-- TURN kimlik bilgileri 12 saat geçerlidir ve sadece eşleşmiş oturumlara verilir.
+- Dosyalar sunucuda saklanmaz. Sunucu yalnızca cihazları eşleştirir (sinyalleşme).
+- TURN rölesi kullanılsa dahi tüm veri WebRTC DTLS ile uçtan uca şifrelenir.
+- Davet token'ları 128 bit kriptografik rastgele değerlerden oluşur.
+- TURN kimlik bilgileri 12 saat geçerlidir ve yalnızca eşleşmiş oturumlara sağlanır.

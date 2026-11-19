@@ -91,7 +91,7 @@ python -m PyInstaller ODrop.spec
 
 ## Remote Transfers (Invite Links & Codes)
 
-Users on different networks can send files losslessly straight to your PC or browser via a single-use invite link or 6-digit room code. Each transfer requires approval, and a self-hosted coturn TURN relay is used when a direct P2P connection cannot be established. For setup details, see [docs/DAVET_LINKI.md](docs/DAVET_LINKI.md).
+Users on different networks can send files losslessly straight to your PC or browser via a single-use invite link or 6-digit room code. Each transfer requires approval, and a self-hosted coturn TURN relay is used when a direct P2P connection cannot be established. For setup details, see [docs/INVITE_LINKS.md](docs/INVITE_LINKS.md).
 
 ---
 
